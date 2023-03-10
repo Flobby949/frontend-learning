@@ -13,6 +13,14 @@
     <div id="app">
         <h2>{{ product }}</h2>
         <p>{{ description }}</p>
+        <div class="product-image">
+            <img v-bind:src="image" :alt="product">
+        </div>
+        <a :href="url">Vue 3 官网</a>
+        <div v-if="inStock">In Stock</div>
+        <div v-else>Out of Stock</div>
+
+        <p v-if="onSale">On Sale</p>
     </div>
     <!-- Mount App 应用挂载 -->
     <script>
