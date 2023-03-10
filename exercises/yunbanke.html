@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>云班课</title>
+    <script src="../common/vue.global.js"></script>
+    <script src="./main.js"></script>
+    <link rel="stylesheet" href="../common/common.css">
+    <link rel="stylesheet" href="./asserts/style.css">
+</head>
+<body>
+    
+<div id="app">
+    <!-- 云班课List练习 -->
+    <div class="course" style="display: flex;flex-wrap: wrap;margin: 10px;">
+        <div v-for="(course, index) in courses" :key="course.no">
+            <div class="card link" @mouseleave="leave(course)">
+                <div class="cover" @mouseover="hover(course)">
+                    <img :src="course.cover" class="cover">
+                    <div class="mask cover" v-if="course.isClose">
+                        <img src="https://static-cdn-oss.mosoteach.cn/mosoteach2/common/images/index_creat_icon_end.png">
+                    </div>
+                </div>
+                <div class="class-card">
+                    <div class="teacher-info">
+                        <img :src="course.avatar" class="avatar">
+                        <div class="teacherName">{{course.teacherName}}</div>
+                    </div>
+                    <div class="class-info">
+                        <div style="font-size: 18px; flex: 1">{{course.name}}</div>
+                        <div style="font-size: 14px; color:#d3d3d3; flex: 1">班课号：{{course.no}}</div>
+                        <div style="font-size: 14px; color:#d3d3d3; flex: 1">{{course.time}}</div>
+                        <div class="enter">
+                            <span v-if="!course.isClose" style="color: #2b5de7;">进入 ></span>
+                            <!-- 已结课并且展示 -->
+                            <span v-show="course.isClose && course.show" style="color: #e72b2b;">删 除</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- 进行中并且展示 -->
+                <div class="bar" v-show="!course.isClose && course.show">
+                    <div class="btn">发起签到</div>
+                    <div class="btn">课堂表现</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Mount App 应用挂载 -->
+<script>
+    const mountedApp = app.mount("#app")
+</script>
+</body>
+</html>
