@@ -11,16 +11,62 @@
 </head>
 <body>
     <div id="app">
-        <h2>{{ product }}</h2>
-        <p>{{ description }}</p>
-        <div class="product-image">
-            <img v-bind:src="image" :alt="product">
-        </div>
-        <a :href="url">Vue 3 官网</a>
-        <div v-if="inStock">In Stock</div>
-        <div v-else>Out of Stock</div>
+        <div class="nav-bar"></div>
 
-        <p v-if="onSale">On Sale</p>
+        <div class="product-display">
+            <div class="product-container">
+                <div class="product-image">
+                    <img v-bind:src="image" :alt="product">
+                </div>
+                <div class="product-info">
+                    <h1>{{ product }}</h1>
+                    <p>{{ description }}</p>
+                    <!-- <a :href="url">Vue 3 官网</a> -->
+                    <div v-if="inStock">In Stock</div>
+                    <div v-else>Out of Stock</div>
+    
+                    <!-- <button class="button" v-show="stock > 10">按钮</button> -->
+                    
+                    <ul>
+                        <li v-for="(item, index) in details" :key="index">
+                            {{item}}
+                        </li>
+                    </ul>
+                    <h2>COLOR</h2>
+                    <div v-for="variant in variants" :key="variant.id">
+                        {{ variant.color }}
+                    </div>
+                    <h2>SIZE</h2>
+                    <div v-for="(item, index) in sizes" :key="index">
+                        {{ item }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 云班课List练习 -->
+        <!-- <div class="course" style="display: flex;flex-wrap: wrap;margin: 10px;">
+            <div v-for="course in courses" :key="course.no">
+                <div class="card">
+                    <div class="img">
+                        <img :src="course.cover" class="cover">
+                        <div class="mask" v-if="course.isClose"><img src="https://static-cdn-oss.mosoteach.cn/mosoteach2/common/images/index_creat_icon_end.png" alt="" srcset=""></div>
+                    </div>
+                    <div class="class-card">
+                        <div class="teacher-info">
+                            <img :src="course.avatar" class="avatar">
+                            <div class="teacherName">{{course.teacherName}}</div>
+                        </div>
+                        <div class="class-info">
+                            <div style="font-size: 18px; flex: 1">{{course.name}}</div>
+                            <div style="font-size: 14px; color:#d3d3d3; flex: 1">班课号：{{course.no}}</div>
+                            <div style="font-size: 14px; color:#d3d3d3; flex: 1">{{course.time}}</div>
+                            <div class="enter">进入 ></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> -->
     </div>
     <!-- Mount App 应用挂载 -->
     <script>
