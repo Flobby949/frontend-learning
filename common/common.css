@@ -38,28 +38,13 @@ li {
   height: 100%;
 }
 
-/* 页面容器,80%宽度,水平居中 */
-.container {
-  width: 80%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 /* 常用的高度设置 */
 .full-height {
   height: 100%;
 }
 
-.normal-height {
-  height: 70%;
-}
-
-.half-height {
-  height: 50%;
-}
-
-.min-height {
-  height: 30%;
+.full-width {
+  width: 100%;
 }
 
 
@@ -68,48 +53,31 @@ li {
   display: none;
 }
 
-.d-inline {
-  display: inline;
-}
-
-.d-inline-block {
-  display: inline-block;
-}
-
 .d-block {
   display: block;
 }
 
 /* --------------------------水平方向对齐方式------------------------------ */
-.tx-center {
+.text-center {
   text-align: center;
 }
 
-.tx-left {
+.text-left {
   text-align: left;
 }
 
-.tx-right {
+.text-right {
   text-align: right;
 }
 
-.tx-justify {
+.text-justify {
   text-align: justify;
 }
 
-.pull-right {
-  float: right;
-}
-
 /* ----------------------------flex布局设置------------------------------ */
-.d-flex {
+.flex {
   display: flex;
 }
-
-.d-inline-flex {
-  display: inline-flex;
-}
-
 
 .flex-row {
   flex-direction: row;
@@ -163,47 +131,46 @@ li {
 }
 
 /* 主轴方向的几种对齐方式,默认为flex-start,从左到右或从上到下 */
-.justify-content-start {
+.justify-start {
   justify-content: flex-start;
 }
 
-.justify-content-end {
+.justify-end {
   justify-content: flex-end;
 }
 
-.justify-content-center {
+.justify-center {
   justify-content: center;
 }
 
-.justify-content-between {
+.justify-between {
   justify-content: space-between;
 }
 
-.justify-content-around {
+.justify-around {
   justify-content: space-around;
 }
 
 /* 副轴方向的几种对齐方式,默认为strech也就是拉伸效果 */
-.align-items-start {
+.align-start {
   align-items: flex-start;
 }
 
-.align-items-end {
+.align-end {
   align-items: flex-end;
 }
 
-.align-items-center {
+.align-center {
   align-items: center;
 }
 
-.align-items-baseline {
+.align-baseline {
   align-items: baseline;
 }
 
-.align-items-stretch {
+.align-stretch {
   align-items: stretch;
 }
-
 
 /* ----------------------行列嵌套flex布局------------------------------------ */
 .row {
@@ -488,6 +455,56 @@ li {
   margin-left: 3rem;
 }
 
+.mx-1 {
+  margin-left: 0.25rem;
+  margin-right: 0.25rem;
+}
+
+.mx-2 {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.mx-3 {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.mx-4 {
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
+}
+
+.mx-5 {
+  margin-left: 3rem;
+  margin-right: 3rem;
+}
+
+.my-1 {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.my-2 {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.my-3 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.my-4 {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.my-5 {
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+}
+
 /* -------------------------padding设置----------------------------- */
 .p-0 {
   padding: 0;
@@ -591,6 +608,56 @@ li {
 
 .pl-5 {
   padding-left: 3rem;
+}
+
+.px-1 {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}
+
+.px-2 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.px-3 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.px-4 {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.px-5 {
+  padding-left: 3rem;
+  padding-right: 3rem;
+}
+
+.py-1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.py-3 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.py-4 {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.py-5 {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
 }
 
 
@@ -715,47 +782,58 @@ li {
 
 
 /* 背景色 */
-.fill-blue {
+.bg-blue {
   background-color: #0c89ff;
 }
 
-.fill-light-blue {
+.bg-light-blue {
   background-color: #ecf6ff;
 }
 
-.fill-grey {
+.bg-grey {
   background-color: #8591a7;
 }
 
-.fill-light-grey {
+.bg-light-grey {
   background-color: #f6f6f6;
 }
 
-.fill-white {
+.bg-white {
   background-color: #ffffff;
 }
 
 /* 前景色 */
-.blue {
+.text-blue {
   color: #0c89ff;
 }
 
-.deep-blue {
+.text-deep-blue {
   color: #175199;
 }
 
-.light-grey {
+.text-light-grey {
   color: #8591a7;
 }
 
-.grey {
+.text-grey {
   color: #444444;
 }
 
 
-/* 加粗 */
-.strong {
-  font-weight: 600;
+.font-100 {
+  font-weight: 100;
+}
+
+.font-300 {
+  font-weight: 300;
+}
+
+.font-500 {
+  font-weight: 500;
+}
+
+.font-700 {
+  font-weight: 700;
 }
 
 /* 标题字体 */
@@ -841,66 +919,4 @@ li {
 .img-wrapper img {
   width: 100%;
   height: 100%;
-}
-
-
-/* flex元素在父容器中的显示顺序 */
-.order-first {
-  order: -1;
-}
-
-.order-last {
-  order: 13;
-}
-
-.order-0 {
-  order: 0;
-}
-
-.order-1 {
-  order: 1;
-}
-
-.order-2 {
-  order: 2;
-}
-
-.order-3 {
-  order: 3;
-}
-
-.order-4 {
-  order: 4;
-}
-
-.order-5 {
-  order: 5;
-}
-
-.order-6 {
-  order: 6;
-}
-
-.order-7 {
-  order: 7;
-}
-
-.order-8 {
-  order: 8;
-}
-
-.order-9 {
-  order: 9;
-}
-
-.order-10 {
-  order: 10;
-}
-
-.order-11 {
-  order: 11;
-}
-
-.order-12 {
-  order: 12;
 }

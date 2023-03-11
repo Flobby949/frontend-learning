@@ -128,20 +128,21 @@
 			.info-area{
 				flex: 1;
 				padding: 20rpx;
+				display: flex;
+				flex-direction: column;
+				justify-content: space-around;
 				
 				.course-name {
 					font-weight: 700;
 					font-size: 36rpx;
-					flex: 1;
 				}
 				.teacher-info {
+					align-items: center;
 					width: 400rpx;
-					height: 60rpx;
 					justify-content: space-between;
 					display: flex;
 					flex-direction: row;
 					flex-wrap: nowrap;
-					line-height: 60rpx;
 					flex: 1;
 					
 					.meta {
@@ -159,10 +160,8 @@
 				.operator-bar {
 					justify-content: space-between;
 					display: flex;
-					flex: 1;
 					flex-direction: row;
 					flex-wrap: nowrap;
-					height: 55rpx;
 					
 					.item {
 						width: 120rpx;
