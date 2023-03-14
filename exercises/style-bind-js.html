@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>动态样式原生</title>
+</head> 
+<body>
+    <div class="flex flex-column justify-center align-center p-5">
+        <h1>计数器</h1>
+        <div class="title m-5 p-5" id="number" style="font-size: 60px;">5</div>
+        <div class="flex flex-row-reverse">
+            <input type="button" class="blue-txt-btn m-5 px-4" id="sub" value="Subtract" />
+            <input type="button" class="blue-txt-btn m-5 px-4" id="reset" value="Reset" />
+            <input type="button" class="blue-txt-btn m-5 px-4" id="add" value="Add" />
+        </div>
+        <div id="progress" style="height: 10px;width: 50px;background: #000; margin-top: 20px;"></div>
+    </div>
+
+    <script>
+        let number = document.getElementById('number')
+        let progress = document.getElementById('progress')
+
+        add.onclick = function() {
+            number.innerHTML++
+            let progressNumber = Number(progress.style.width.split('p')[0])
+            let add = document.getElementById('add');
+            if (progressNumber < 100) {
+                progress.style.width = progressNumber + 10 + 'px'
+            }
+            if (number.innerHTML >= 10 ) {
+                number.style.color = 'red'
+                progress.style.background = 'red'
+            }
+        }
+
+        let sub = document.getElementById('sub');
+        sub.onclick = function() {
+            number.innerHTML--
+            let progressNumber = Number(progress.style.width.split('p')[0])
+            let add = document.getElementById('add');
+            progress.style.width = progressNumber - 10 + 'px'
+            if (number.innerHTML <= 0 ) {
+                number.style.color = 'green'
+            }
+        }
+
+        let reset = document.getElementById('reset')
+        reset.onclick = function() {
+            number.innerHTML = 5
+            number.style.color = 'black'
+            progress.style.width = '50px'
+            progress.style.background = 'black'
+        }
+
+    </script>
+</body>
+</html>

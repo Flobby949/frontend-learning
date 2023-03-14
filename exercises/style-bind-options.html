@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>动态样式绑定练习</title>
+    <script src="../common/vue.global.js"></script>
+    <script src="./main.js"></script>
+    <link rel="stylesheet" href="../common/common.css">
+    <link rel="stylesheet" href="./asserts/style.css">
+    <style>
+        .red {
+            color: red
+        }
+        .green {
+            color: green;
+        }
+        .progress {
+            background: #000;
+            height: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="fill">
+        <div class="flex flex-column justify-center align-center p-5">
+        <h1>计数器</h1>
+        <div class="title m-5 p-5" style="font-size: 60px;" :class="{red: number>=10,green: number<=0 }">{{ number }}</div>
+        <div class="progress" :style="{width: number >= 10 ? '100px' : number*10+'px'}"></div>
+            <div class="flex flex-row">
+                <button @click="subtract" class="blue-txt-btn m-5 px-4">Subtract</button>
+                <button @click="reset" class="blue-txt-btn m-5 px-4">Reset</button>
+                <button @click="add" class="blue-txt-btn m-5 px-4">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const mountedApp = app.mount("#app")
+    </script>
+</body>
+</html>

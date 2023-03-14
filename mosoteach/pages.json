@@ -1,0 +1,63 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/find/find",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/my/my",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "云班课",
+		"navigationBarBackgroundColor": "#1296db",
+		"backgroundColor": "#1296db"
+	},
+	"uniIdRouter": {},
+	"tabBar": {
+		"color": "#707070",
+		"selectedColor": "#1296db",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		"height": "50px",
+		"fontSize": "10px",
+		"iconWidth": "24px",
+		"spacing": "3px",
+		"list": [{
+				"text": "班课",
+				"pagePath": "pages/index/index",
+				"iconPath": "static/tabbar/yun.png",
+				"selectedIconPath": "static/tabbar/yun_active.png"
+			},
+			{
+				"text": "发现",
+				"pagePath": "pages/find/find",
+				"iconPath": "static/tabbar/find.png",
+				"selectedIconPath": "static/tabbar/find_active.png"
+			},
+			{
+				"text": "我的",
+				"pagePath": "pages/my/my",
+				"iconPath": "static/tabbar/my.png",
+				"selectedIconPath": "static/tabbar/my_active.png"
+			}
+		]
+	},
+	"easycom": {
+		"autoscan": true, //是否自动扫描组件
+		"custom": { //自定义扫描规则
+			"^uni-(.*)": "@/components/uni-$1.vue"
+		}
+	}
+}

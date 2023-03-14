@@ -32,7 +32,8 @@ const app = Vue.createApp({
                     time: '2023/2 - 2023/3',
                     show: false
                 },
-            ]
+            ],
+            number: 5
         }
     },
     methods: {
@@ -42,5 +43,14 @@ const app = Vue.createApp({
         leave(course) {
             course.show = false
         },
+        add() {
+            this.number++
+        },
+        subtract() {
+            this.number--
+        },
+        reset() {
+            this.number = 5
+        }
     }
 })
