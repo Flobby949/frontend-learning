@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>选项卡练习</title>
+    <script src="../common/vue.global.js"></script>
+    <link rel="stylesheet" href="../common/common.css">
+    <link rel="stylesheet" href="./asserts/style.css">
+    <style>
+        :root {
+            --grey: #5b5757;
+            --blue: #54b8d9;
+        }
+
+        *,
+        ::after,
+        ::before {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        ul {
+            list-style-type: none;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--grey);
+        }
+
+        .container {
+            width: 50%;
+            margin: 0 auto;
+        }
+
+        .tab-bar ul {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .tab-bar li {
+            padding: 10px20px;
+        }
+
+        .tab-bar a {
+            padding-bottom: 8px;
+        }
+
+        .tab-bar span {
+            font-size: 13px;
+        }
+
+        .tab-content {
+            min-height: 400px;
+            border: 1pxsolidvar(--blue);
+            border-radius: 4px;
+            margin-top: 10px;
+            padding: 10px;
+            color: var(--grey);
+        }
+
+        .active {
+            color: var(--blue);
+            font-weight: bold;
+            border-bottom: 2pxsolidvar(--blue);
+        }
+
+        .messageActive {
+            background: #4fd5d3;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="container">
+            <h3>选项卡</h3>
+            <div class="tab-bar">
+                <ul>
+                    <li v-for="(tab, index) in tabs" @click="changeTab(index)" :key="index">
+                        <a href="#" :class="[currentIdx === index ? 'active' : '']">
+                            {{tab.name}}
+                            <span>({{tab.count}})</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div v-for="(content, index) in contents">
+                <div v-if="currentIdx === index" class="tab-content">
+                    <div v-if="index === 0">
+                        <div v-for="(item, idx) in content.resources">
+                            <div class="flex p-3 border">
+                                <img :src="item.img" width="100">
+                                <div class="flex-1 p-3 justify-center align-center">{{item.title}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-if="index === 1 || index === 2">
+                        <div v-for="(item, idx) in content.list">
+                            <p>{{ item }}</p>
+                        </div>
+                    </div>
+                    <div v-if="index === 3" class="flex flex-row">
+                        <div class="flex-column">
+                            <div v-for="(item, idx) in content.messages" @click="changeMessage(idx)">
+                                <div class="p-3 border m-1" :class="[messageIdx === idx ? 'messageActive' : '']">
+                                    <img :src="item.img" width="60">
+                                    <div class="justify-center align-center">{{item.title}}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border flex-1">
+                            <div v-for="(item, idx) in messageContents[messageIdx].messageContent">
+                                <div class="p-5 align-center justify-around">{{ item }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./tab-card.js"></script>
+</body>
+
+</html>
