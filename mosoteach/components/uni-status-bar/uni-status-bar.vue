@@ -12,6 +12,7 @@
 
 <style scoped>
 	.uni-status-bar {
+		position: fixed;
 		width: 750rpx;
 		height: 20px;
 		background-color: var(--light);

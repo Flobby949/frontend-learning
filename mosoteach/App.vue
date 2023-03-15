@@ -15,4 +15,5 @@
 <style>
 @import './common/style.css';
 @import './common/iconfont.css';
+@import './common/var.css';
 </style>

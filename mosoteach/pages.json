@@ -12,9 +12,7 @@
 			}
 		}, {
 			"path": "pages/my/my",
-			"style": {
-				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false
+			"style": {				"navigationStyle": "custom"
 			}
 		}
 	],
