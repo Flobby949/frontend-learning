@@ -1,22 +1,33 @@
 const app = Vue.createApp({
     data() {
         return {
-            product: 'Socks',
-            description: 'A warm fuzzy pair of socks.',
-            image: './asserts/images/socks_blue.jpg',
-            url: "https://cn.vuejs.org/",
-            inStock: true,
-            stock: 10,
-            price: 50,
-            details: ['50% cotton', '30% wool', '20% polyester'],
-            variants: [
-                { id: 2234, color: 'green', image: './asserts/images/socks_green.jpg', quantity: 50 },
-                { id: 2235, color: 'blue', image: './asserts/images/socks_blue.jpg', quantity: 50 }
-            ],
-            sizes: ['s', 'm', 'l', 'xl'],
             cart: 0,
             firstName: '张',
-            lastName: '三'
+            lastName: '三',
+            x: true,
+            y: false,
+            list: [
+                {
+                    name: '商品1',
+                    image: './asserts/images/socks_blue.jpg',
+                    price: '10￥'
+                },
+                {
+                    name: '商品2',
+                    image: './asserts/images/socks_green.jpg',
+                    price: '20￥'
+                },
+                {
+                    name: '商品3',
+                    image: './asserts/images/socks_blue.jpg',
+                    price: '30￥'
+                }
+            ],
+            currentItem:{
+                name: '商品1',
+                image: './asserts/images/socks_blue.jpg',
+                price: '10￥'
+            }
         }
     },
     computed: {
@@ -33,15 +44,11 @@ const app = Vue.createApp({
         }
     },
     methods: {
-        addToCart() {
-            this.cart += 1
+        addCart() {
+            this.cart++
         },
-        removeToCart() {
-            this.cart -= 1
-        },
-        updateImage(variantImage) {
-            this.image = variantImage
+        changeDetail(e) {
+           this.currentItem = this.list[e]
         }
-
     },
 })

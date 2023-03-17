@@ -754,6 +754,10 @@ li {
   border: 1px solid #f0f2f7;
 }
 
+.border-black {
+  border: 1px solid #333;
+}
+
 .border-bottom {
   border-bottom: 1px solid #f0f2f7;
 }
@@ -819,6 +823,9 @@ li {
   color: #444444;
 }
 
+.text-white {
+  color: #fff;
+}
 
 .font-100 {
   font-weight: 100;
