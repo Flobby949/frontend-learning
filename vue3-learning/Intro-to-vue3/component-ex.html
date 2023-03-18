@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intro to Vue3</title>
+    <!-- <link rel="stylesheet" href="./styles.css"> -->
+    <link rel="stylesheet" href="../../common/common.css">
+    <script src="../../common/vue.global.js"></script>
+    <script src="./main.js"></script>
+    <style>
+        .active {
+            background: #9a9a9a86;
+        }
+
+        .button {
+            margin: 30px;
+            background-color: #5fa1f1;
+            border-radius: 5px;
+            font-size: 18px;
+            width: 160px;
+            height: 60px;
+            color: white;
+            padding: 20px;
+            box-shadow: inset 0 -0.6em 1em -0.35em rgba(0, 0, 0, 0.17),
+                inset 0 0.6em 2em -0.3em rgba(255, 255, 255, 0.15),
+                inset 0 0 0em 0.05em rgba(255, 255, 255, 0.12);
+            text-align: center;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="nav-bar flex justify-end align-center pr-5">
+            <div class="flex bg-white normal-font mr-5">
+                <div class="pr-1 flex align-center p-1" :class="[isList?'active':'']">
+                    <img src="./asserts/images/list-style.png" width="30" @click="isList = true">
+                </div>
+                <div class="pl-1 flex align-center p-1" :class="[!isList?'active':'']">
+                    <img src="./asserts/images/card-style.png" width="30" @click="isList = false">
+                </div>
+            </div>
+        </div>
+        <div v-if="isList" class="flex">
+            <div>
+                <product-list :products="list" @add-cart="add($event)" />
+            </div>
+            <div class="border-black card p-5 flex-column">
+                <h1>购物车</h1>
+                <div class="p-3">
+                    <div v-for="(item, index) in bills" class="p-1">
+                        {{item.name}}
+                    </div>
+                </div>
+                <div>总计：{{total}} ￥</div>
+            </div>
+        </div>
+        <div v-else class="flex flex-wrap">
+            <div v-for="product in list">
+                <product-detail :item="product" />
+            </div>
+        </div>
+    </div>
+    <!-- Mount App 应用挂载 -->
+    <script src="./components/productList.js"></script>
+    <script src="./components/productDetail.js"></script>
+    <script>
+        const mountedApp = app.mount("#app")
+    </script>
+</body>
+
+</html>
