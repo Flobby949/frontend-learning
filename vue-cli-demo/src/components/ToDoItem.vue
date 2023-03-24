@@ -1,15 +1,21 @@
 <template>
-  <div class="card" :class="item.finish ? 'finish' : ''">
-    <img :src="update(item.img)" class="img" />
-    <div>
-      <h2>{{ item.title }}</h2>
-      <p>{{ item.date }}</p>
-      <p>{{ item.finish ? '结束' : '进行中' }}</p>
+  <RouterLink class="item-link" :to="{ name: 'item-detail', params: { id: item.id } }">
+    <div class="card" :class="item.finish ? 'finish' : ''">
+      <img :src="update(item.img)" class="img" />
+      <!-- <img :src="localPath" class="img" /> -->
+      <div>
+        <h2>{{ item.title }}</h2>
+        <p>{{ item.date }}</p>
+        <p>{{ item.finish ? '结束' : '进行中' }}</p>
+      </div>
     </div>
-  </div>
+  </RouterLink>
 </template>
 
 <script setup>
+// eslint-disable-next-line no-unused-vars
+import { ref, watchEffect } from 'vue'
+
 defineProps({
   item: {
     type: Object,
@@ -17,9 +23,17 @@ defineProps({
   }
 })
 
+// 本地图片url拼接 方法一
 function update(url) {
-  return new URL(`../assets/images/${url}`, import.meta.url).href
+  console.log(url)
+  return new URL(`../assets/images/${url}.png`, import.meta.url).href
 }
+
+// 本地图片url拼接 方法二
+// let localPath = ref()
+// watchEffect(async () => {
+//   localPath.value = await import(`../assets/images/${props.item.img}.png`)
+// })
 </script>
 
 <style scoped>
