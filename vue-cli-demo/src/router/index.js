@@ -1,27 +1,75 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import MyView from '../views/ToDoView.vue'
+import LayoutView from '../views/LayoutView.vue'
+import LoginView from '../views/LoginView.vue'
+import RegisterView from '../views/RegisterView.vue'
+import ToDoView from '../views/ToDoView.vue'
 import ItemDetailView from '../views/ItemDetailView.vue'
+import ITView from '../views/ITView.vue'
+import BackendView from '../views/BackendView.vue'
+import FrontendView from '../views/FrontendView.vue'
+import IosView from '../views/IosView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView
+      name: 'layout',
+      component: LayoutView,
+      redirect: '/home',
+      children: [
+        {
+          path: '/home',
+          name: 'home',
+          component: HomeView
+        },
+        {
+          path: '/todo',
+          name: 'todo',
+          component: ToDoView
+        },
+        {
+          // 动态路由
+          path: '/items/:id',
+          name: 'item-detail',
+          props: true,
+          component: ItemDetailView
+        },
+        {
+          path: '/it',
+          name: 'it',
+          component: ITView,
+          redirect: '/it/backend',
+          children: [
+            {
+              path: '/it/backend',
+              name: 'backend',
+              component: BackendView
+            },
+            {
+              path: '/it/frontend',
+              name: 'frontend',
+              component: FrontendView
+            },
+            {
+              path: '/it/ios',
+              name: 'ios',
+              component: IosView
+            },
+          ]
+        }
+      ]
     },
     {
-      path: '/todo',
-      name: 'todo',
-      component: MyView
+      path: '/login',
+      name: 'login',
+      component: LoginView
     },
     {
-      // 动态路由
-      path: '/items/:id',
-      name: 'item-detail',
-      props: true,
-      component: ItemDetailView
+      path: '/register',
+      name: 'register',
+      component: RegisterView
     }
   ]
 })
