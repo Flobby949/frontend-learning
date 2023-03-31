@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>箭头函数</title>
+</head>
+<body>
+    <h3> this 总是指向调用它的对象</h3>
+    <script>
+        var title = '全局标题';
+        var obj = {
+            title: "es6学习",
+            getTitle: function(){
+                console.log(this.title);
+            }
+        };
+        obj.getTitle();                  // es6学习
+        console.log('-------------');
+        var bar = obj.getTitle;          // bar 属于  window 下的方法
+        // obj.bar()                     // obj.bar is not a function
+        bar();                           // 调用 bar 方法的是 window，此时this 指向 window，打印全局标题
+    </script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>箭头函数</title>
+</head>
+<body>
+    <h3>箭头函数没有自己的 this 指向，所有的 this 都指向 window</h3>
+    <script>
+        var title = '全局标题';
+        var obj = {
+            title: "es6学习",
+            getTitle:() => {
+                console.log(this.title);
+            }
+        };
+        obj.getTitle();                  
+        console.log('-------------');
+        var bar = obj.getTitle;                     
+        bar();                           
+    </script>
+</body>
+</html>

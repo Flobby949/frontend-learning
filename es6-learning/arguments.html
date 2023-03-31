@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arguments</title>
+</head>
+<body>
+    <script>
+        function fn() {
+            // 通过 arguments 对象可以拿到传入参数
+            // arguments 中包含了函数传递的参数，length 等属性，length表示实参长度，即调用函数传入的参数个数
+            console.log(arguments);
+
+            // 想要使用传递的参数，则需要韩位置把对应参数取出来
+            // arguments 是一个类数组切可以遍历的变量，但他不是数组，不支持数组方法
+            // 不能调用 forEach 等方法，需要转成数组使用
+            // 借助 call 方法转化
+            var arr = [].slice.call(arguments)
+            console.log(arr);
+        }
+        fn('hello', 123, 'ES6')
+    </script>
+</body>
+</html>
