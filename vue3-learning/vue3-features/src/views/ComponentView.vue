@@ -1,8 +1,15 @@
 <script setup>
-import { reactive, ref } from "vue";
-import childItem from '@/components/ChildItem.vue'
-import { useShare } from '@vueuse/core'
-import { isClient } from '@vueuse/shared'
+import { reactive, ref, defineAsyncComponent, provide } from "vue";
+import ChildComp from '../components/ChildComp.vue'
+import UserInfo from '../components/UserInfo.vue';
+import InjectProvider from '../components/InjectProvider.vue';
+
+// provide/inject
+const injectMsg = ref('hello provide/inject')
+provide('msg', injectMsg)
+
+// 异步组件
+const ChildItem = defineAsyncComponent(() => import('../components/ChildItem.vue'));
 
 const msg = ref('父组件msg')
 let list = reactive([1, 2, 3])
@@ -15,38 +22,46 @@ const changeList = (arr) => {
   list.splice(0, list.length, ...arr)
 }
 
-const { share, isSupported } = useShare()
 
-const options = ref({
-  title: 'VueUse',
-  text: '分享网页',
-  url: isClient ? location.href : '',
-})
+// 子组件 ref
+const userInfoRef = ref()
 
-function startShare() {
-  share({
-    title: 'Hello',
-    text: 'Hello my friend!',
-    url: location.href,
-  })
+const getName = () => {
+  // 获取子组件 name
+  console.log(userInfoRef.value.name)
+  // 执行子组件方法
+  userInfoRef.value.changeName()
+  // 获取修改后的 name
+  console.log(userInfoRef.value.name)
 }
 
 </script>
 
 <template>
-  <div class="about">
-    <childItem :msg="msg" :list="list" @change-msg="changeMsg" @change-list="changeList" />
-  </div>
+  <Suspense>
+    <template #default>
+      <div>
+        <!-- 异步组件-默认渲染的页面 -->
+        <div class="about">
+          <childItem :msg="msg" :list="list" @change-msg="changeMsg" @change-list="changeList" />
+        </div>
 
-  <div>
-    <input
-      v-if="isSupported"
-      v-model="options.text"
-      type="text"
-      placeholder="Note"
-    >
-    <button :disabled="!isSupported" @click="startShare">
-      {{ isSupported ? '分享' : 'Web share is not supported in your browser' }}
-    </button>
-  </div>
+        <div>
+          <UserInfo ref="userInfoRef"></UserInfo>
+          <button @click="getName">获取子组件中的数据</button>
+        </div>
+      </div>
+    </template>
+
+    <template #fallback>
+      <!-- 页面还没加载出来展示的页面 -->
+      <div>loading...</div>
+    </template>
+  </Suspense>
+  <!-- 插入至 body -->
+  <Teleport to=body>
+    <ChildComp></ChildComp>
+  </Teleport>
+  
+  <InjectProvider></InjectProvider>
 </template>

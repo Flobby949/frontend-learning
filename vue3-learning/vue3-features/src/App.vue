@@ -10,6 +10,8 @@
         <RouterLink to="/computed">计算属性</RouterLink>
         <RouterLink to="/watch">侦听器</RouterLink>
         <RouterLink to="/component">组件</RouterLink>
+        <RouterLink to="/slot">插槽组件</RouterLink>
+        <RouterLink to="/model">V-Model</RouterLink>
         <RouterLink to="/vueuse">VueUse</RouterLink>
       </nav>
   </header>

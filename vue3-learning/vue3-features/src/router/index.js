@@ -14,6 +14,11 @@ const router = createRouter({
       component: () => import('../views/ComponentView.vue')
     },
     {
+      path: '/slot',
+      name: 'SlotComponent',
+      component: () => import('../views/SlotComponent.vue')
+    },
+    {
       path: '/refAndReactive',
       name: 'reactiveView',
       component: () => import('../views/RefAndReactive.vue')
@@ -37,6 +42,11 @@ const router = createRouter({
       path: '/watch',
       name: 'WatchView',
       component: () => import('../views/WatchView.vue')
+    },
+    {
+      path: '/model',
+      name: 'ModelView',
+      component: () => import('../views/ModelView.vue')
     },
   ]
 })
