@@ -1,8 +1,5 @@
 <template>
 	<view>
-		<!-- 手机顶部状态栏 -->
-		<uni-status-bar class="fixed-top"></uni-status-bar>
-
 		<!-- 条件编译-导航栏 -->
 		// #ifdef APP-PLUS
 		<view class="flex justify-between pb-1 bg-light fixed-top" id="nav-bar"
@@ -52,49 +49,51 @@
 
 		<!-- 主体内容，渲染班课数组 -->
 		<view class="border-bottom bg-white mb-2" v-for="(course, index) in courses" :key="index" :index="index">
-			<view class="text-dark h4 font-weight-bold p-2">
-				{{course.name}}
-			</view>
-			<view class="flex px-2">
-				<view class="flex-1">
-					<image :src="course.cover" class="thumbnail"></image>
+			<view @click="coursePage(index)">
+				<view class="text-dark h4 font-weight-bold p-2">
+					{{course.name}}
+				</view>
+				<view class="flex px-2">
+					<view class="flex-1">
+						<image :src="course.cover" class="thumbnail"></image>
+					</view>
+					
+					<view class="flex-4 ml-2">
+						<view>
+							<text>{{course.className}}</text>
+						</view>
+						<view class="mt-2">
+							<text class="text-muted mr-2">{{course.time}}</text>
+							<text class="text-info">{{course.no}}</text>
+						</view>
+					</view>
+					
+					<view class="flex-1 text-right">
+						<text class="iconfont icon-right-arrow text-muted"></text>
+					</view>
 				</view>
 				
-				<view class="flex-4 ml-2">
+				<view class="p-2 flex justify-between text-center text-muted">
 					<view>
-						<text>{{course.className}}</text>
+						<view class="iconfont icon-check"></view>
+						<view class="font-sm mt-1">签到</view>
 					</view>
-					<view class="mt-2">
-						<text class="text-muted mr-2">{{course.time}}</text>
-						<text class="text-info">{{course.no}}</text>
+					<view>
+						<view class="iconfont icon-check"></view>
+						<view class="font-sm mt-1">签到</view>
 					</view>
-				</view>
-				
-				<view class="flex-1 text-right">
-					<text class="iconfont icon-right-arrow text-muted"></text>
-				</view>
-			</view>
-			
-			<view class="p-2 flex justify-between text-center text-muted">
-				<view>
-					<view class="iconfont icon-check"></view>
-					<view class="font-sm mt-1">签到</view>
-				</view>
-				<view>
-					<view class="iconfont icon-check"></view>
-					<view class="font-sm mt-1">签到</view>
-				</view>
-				<view>
-					<view class="iconfont icon-check"></view>
-					<view class="font-sm mt-1">签到</view>
-				</view>
-				<view>
-					<view class="iconfont icon-check"></view>
-					<view class="font-sm mt-1">签到</view>
-				</view>
-				<view>
-					<view class="iconfont icon-check"></view>
-					<view class="font-sm mt-1">签到</view>
+					<view>
+						<view class="iconfont icon-check"></view>
+						<view class="font-sm mt-1">签到</view>
+					</view>
+					<view>
+						<view class="iconfont icon-check"></view>
+						<view class="font-sm mt-1">签到</view>
+					</view>
+					<view>
+						<view class="iconfont icon-check"></view>
+						<view class="font-sm mt-1">签到</view>
+					</view>
 				</view>
 			</view>
 		</view>
@@ -204,6 +203,12 @@
 		console.log("胶囊宽度:" + buttonWidth)
 	})
 	// #endif
+	
+	const coursePage = (index) => {
+		uni.navigateTo({
+			url: `/pages/course/course-task-all?id=${courses[index].no}`
+		})
+	}
 </script>
 
 <style scoped>

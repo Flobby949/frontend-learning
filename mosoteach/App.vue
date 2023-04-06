@@ -14,6 +14,7 @@
 
 <style>
 @import './common/style.css';
-@import './common/iconfont.css';
 @import './common/var.css';
+@import "tailwindcss/base";
+@import "tailwindcss/utilities";
 </style>

@@ -12,10 +12,57 @@
 			}
 		}, {
 			"path": "pages/my/my",
-			"style": {				"navigationStyle": "custom"
+			"style": {
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/course/course-task-all",
+			"style": {
+				"navigationStyle": "custom"
 			}
 		}
-	],
+	    ,{
+            "path" : "pages/course/course-task-in",
+			"style": {
+				"navigationStyle": "custom"
+			}
+            
+        }
+        ,{
+            "path" : "pages/course/course-task-finish",
+			"style": {
+				"navigationStyle": "custom"
+			}
+        }
+        ,{
+            "path" : "pages/course/resource",
+			"style": {
+				"navigationStyle": "custom"
+			}
+            
+        }
+        ,{
+            "path" : "pages/course/member",
+			"style": {
+				"navigationStyle": "custom"
+			}
+            
+        }
+        ,{
+            "path" : "pages/course/message",
+			"style": {
+				"navigationStyle": "custom"
+			}
+            
+        }
+        ,{
+            "path" : "pages/course/detail",
+			"style": {
+				"navigationStyle": "custom"
+			}
+            
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "云班课",
