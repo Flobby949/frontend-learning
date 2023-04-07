@@ -5,17 +5,17 @@
     </div>
 
     <div class="text-center shadow-xl py-6 cursor-pointer">
-      <img src="https://i2.100024.xyz/2023/01/26/3e727b.webp" class="w-32 h-32 m-auto rounded-full object-cover">
-      <h5 class="mt-4 text-xl font-semibold text-gray-600 lg:block">InfinityX7</h5>
+      <img src="https://flobby529.oss-cn-nanjing.aliyuncs.com/avatar/9b09d8fde54dfbafc7ea1af1c15fa1b.jpg" class="w-32 h-32 m-auto rounded-full object-cover">
+      <h5 class="mt-4 text-xl font-semibold text-gray-600 lg:block">Flobby</h5>
       <span class="hidden text-gray-400 lg:block">Admin</span>
     </div>
 
     <ul class="mt-6">
       <li>
-        <RouterLink to="/dashboard" class="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600">
+        <RouterLink to="/simpleForm" class="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600">
           <!-- 使用图标库 https://github.com/tailwindlabs/heroicons -->
           <ComputerDesktopIcon class="h-6 w-6 text-gray-400" />
-          <span class="group-hover:text-cyan-400">仪表盘</span>
+          <span class="group-hover:text-cyan-400">表单</span>
         </RouterLink>
       </li>
 

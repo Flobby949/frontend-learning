@@ -8,12 +8,12 @@ const router = createRouter({
       path: '/',
       name: 'layout',
       component: LayoutView,
-      redirect: '/dashboard',
+      redirect: '/simpleForm',
       children: [
         {
-          path: '/dashboard',
-          name: 'dashboard',
-          component: () => import('../views/DashboardView.vue')
+          path: '/simpleForm',
+          name: 'SimpleFormView',
+          component: () => import('../views/SimpleFormView.vue')
         },
         {
           path: 'category',
