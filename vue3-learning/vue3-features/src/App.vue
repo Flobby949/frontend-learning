@@ -13,10 +13,12 @@
         <RouterLink to="/slot">插槽组件</RouterLink>
         <RouterLink to="/model">V-Model</RouterLink>
         <RouterLink to="/vueuse">VueUse</RouterLink>
+        <RouterLink to="/use">自定义use</RouterLink>
+        <RouterLink to="/sock">Sock Ex</RouterLink>
       </nav>
   </header>
 
-  <main>
+  <main class="bg-[#c4ebff] m-10">
     <RouterView />
   </main>
 </template>

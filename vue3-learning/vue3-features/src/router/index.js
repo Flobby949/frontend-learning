@@ -48,6 +48,16 @@ const router = createRouter({
       name: 'ModelView',
       component: () => import('../views/ModelView.vue')
     },
+    {
+      path: '/sock',
+      name: 'SockView',
+      component: () => import('../views/SockView.vue')
+    },
+    {
+      path: '/use',
+      name: 'UseView',
+      component: () => import('../views/UseView.vue')
+    },
   ]
 })
 
