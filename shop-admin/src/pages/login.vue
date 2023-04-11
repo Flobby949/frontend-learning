@@ -43,10 +43,13 @@
 
 <script setup>
 import { reactive, ref } from 'vue';
+import { adminLogin } from '~/api/admin'
+import { ElNotification } from 'element-plus'
+import router from '~/router/index'
 
 const form = reactive({
-    username: '',
-    password: ''
+    username: 'admin',
+    password: '123456'
 })
 
 const rules = {
@@ -66,7 +69,28 @@ const onSubmit = () => {
             // 校验失败
             return
         }
-        console.log('验证通过');
+        adminLogin(form.username, form.password).then((res) => {
+            if (res.status === 200 && res.data.code === 0) {
+                ElNotification({
+                    message: res.data.msg,
+                    type: 'success',
+                    duration: 2000
+                })
+                router.push('/')
+            } else {
+                ElNotification({
+                    message: res.data.msg || '请求失败',
+                    type: 'error',
+                    duration: 2000
+                })
+            }
+        }).catch((err) => {
+            ElNotification({
+                message: err.response.data.msg || '请求失败',
+                type: 'error',
+                duration: 2000
+            })
+        })
     })
 }
 </script>

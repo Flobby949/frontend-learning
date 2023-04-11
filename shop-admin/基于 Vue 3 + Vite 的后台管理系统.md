@@ -405,9 +405,99 @@ const onSubmit = () => {
 </el-form>
 ```
 
+#### 三、接口请求
+
+##### 一、Apifox 准备 Mock 数据
+
+1. 编写接口文档
+
+![](https://i2.100024.xyz/2023/04/11/p22dd4.webp)
+
+![](https://i2.100024.xyz/2023/04/11/p2r14l.webp)
+
+2. 创建 mock
+
+![](https://i2.100024.xyz/2023/04/11/p8497f.webp)
+
+![](https://i2.100024.xyz/2023/04/11/p8qxrs.webp)
+
+##### 二、页面实现请求
+
+1. 安装 axios
+2. 实现 axios 工具包，src 下创建 axios.js
+
+```js
+import axios from '@/axios'
+
+const service = axios.create({
+    baseURL: 'http://127.0.0.1:4523/m1/2571699-0-default/api',
+
+})
+
+export default service
+```
+
+3. src 添加 api 文件夹，添加请求接口
+
+```js
+//  src/api/admin.js
+
+import axios from '~/axios'
+
+// 管理员登录
+export function adminLogin(username, password) {
+    return axios.post(
+        '/admin/login',
+        {
+            username,
+            password
+        }
+    )
+}
+
+```
+
+4. 页面引入 admin.js 并请求接口
+
+```js
+//  login.vue
 
 
+import { adminLogin } from '~/api/admin'
+import { ElNotification } from 'element-plus'
+import router from '~/router/index'
 
+const onSubmit = () => {
+    formRef.value.validate((valid) => {
+        if (!valid) {
+            // 校验失败
+            return
+        }
+        adminLogin(form.username, form.password).then((res) => {
+            if (res.status === 200 && res.data.code === 0) {
+                ElNotification({
+                    message: res.data.msg,
+                    type: 'success',
+                    duration: 2000
+                })
+                router.push('/')
+            } else {
+                ElNotification({
+                    message: res.data.msg || '请求失败',
+                    type: 'error',
+                    duration: 2000
+                })
+            }
+        }).catch((err) => {
+            ElNotification({
+                message: err.response.data.msg || '请求失败',
+                type: 'error',
+                duration: 2000
+            })
+        })
+    })
+}
+```
 
 ## 三、后台管理 Layout 布局开发
 
