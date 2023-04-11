@@ -15,11 +15,23 @@
                 <el-form label-width="120px" label-position="left">
 
                     <el-form-item label="Username">
-                        <el-input type="text" placeholder="请输入账号" />
+                        <el-input type="text" placeholder="请输入账号">
+                            <template #prefix>
+                                <el-icon>
+                                    <user />
+                                </el-icon>
+                            </template>
+                        </el-input>
                     </el-form-item>
 
                     <el-form-item label="Password">
-                        <el-input type="password" placeholder="请输入密码" />
+                        <el-input type="password" placeholder="请输入密码">
+                            <template #prefix>
+                                <el-icon>
+                                    <lock />
+                                </el-icon>
+                            </template>
+                        </el-input>
                     </el-form-item>
 
                     <el-button type="primary" class="w-80">登 录</el-button>
@@ -30,7 +42,6 @@
 </template>
 
 <script setup>
-
 </script>
 
 <style scoped>

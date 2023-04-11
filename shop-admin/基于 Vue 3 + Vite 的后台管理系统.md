@@ -297,6 +297,46 @@ export default router
 </style>
 ```
 
+3. 全局引入 Element Plus [图标库](https://element-plus.gitee.io/zh-CN/component/icon.html)
+
+```bash
+# 添加依赖
+pnpm install @element-plus/icons-vue
+
+# main.js 全局引入
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+    app.component(key, component)
+}
+```
+
+4. 在登录表单中使用图标
+
+```vue
+<el-form-item label="Username">
+    <el-input type="text" placeholder="请输入账号">
+        <template #prefix>
+            <el-icon>
+                <user />
+            </el-icon>
+        </template>
+    </el-input>
+</el-form-item>
+
+<el-form-item label="Password">
+    <el-input type="password" placeholder="请输入密码">
+        <template #prefix>
+            <el-icon>
+                <lock />
+            </el-icon>
+        </template>
+    </el-input>
+</el-form-item>
+```
+
+
+
 ## 三、后台管理 Layout 布局开发
 
 
