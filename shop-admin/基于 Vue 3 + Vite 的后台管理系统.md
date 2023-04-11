@@ -851,7 +851,101 @@ const onSubmit = () => {
 
 ##### 六、全局路由拦截
 
+1. 前置路由守卫，新建 src/permission.js
 
+```js
+import router from '~/router'
+
+import { getToken } from '~/utils/token'
+import { toast } from '~/utils/toast'
+
+// 全局路由前置守卫
+router.beforeEach((to, from, next) => {
+    // to and from are both route objects. must call `next`.
+    const token = getToken()
+
+    // 目标页面不是登录页，且没有token，跳回登录页面
+    if (!token && to.path != '/login') {
+        toast('请先登录', 'error')
+        return next({ path: '/login' })
+    }
+
+    // 防止重复登录
+    if (to.path == '/login' && token) {
+        toast('请勿重复登录', 'error')
+        return next({ path: from.path || '/' })
+    }
+
+    next()
+})
+```
+
+2. 全局页面动态标题
+
+```js
+// router/index.js
+// 路由数组
+const routes = [
+    {
+        path: '/',
+        name:"index",
+        component: Index,
+        meta: {
+            title: '后台首页'
+        }
+    },
+    {
+        path: '/about',
+        name:"about",
+        component: About,
+        meta: {
+            title: '关于'
+        }
+    },
+    {
+        path: '/login',
+        name:"login",
+        component: Login,
+        meta: {
+            title: '登录'
+        }
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'NotFound',
+        component: NotFound,
+        meta: {
+            title: '页面丢失'
+        }
+    }
+]
+
+
+// ----------------------------------------
+// permission.js
+// 全局路由前置守卫
+router.beforeEach((to, from, next) => {
+    const token = getToken()
+
+    // 目标页面不是登录页，且没有token，跳回登录页面
+    if (!token && to.path != '/login') {
+        toast('请先登录', 'error')
+        return next({ path: '/login' })
+    }
+
+    // 防止重复登录
+    if (to.path == '/login' && token) {
+        toast('请勿重复登录', 'error')
+        return next({ path: from.path || '/' })
+    }
+
+    // 设置页面标题
+    let title = `admin - ${to.meta.title || ''}`
+    document.title = title
+
+    next()
+})
+```
 
 ## 三、后台管理 Layout 布局开发
 

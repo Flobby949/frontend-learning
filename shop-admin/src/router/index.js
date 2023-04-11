@@ -11,22 +11,34 @@ const routes = [
     {
         path: '/',
         name:"index",
-        component: Index
+        component: Index,
+        meta: {
+            title: '后台首页'
+        }
     },
     {
         path: '/about',
         name:"about",
-        component: About
+        component: About,
+        meta: {
+            title: '关于'
+        }
     },
     {
         path: '/login',
         name:"login",
-        component: Login
+        component: Login,
+        meta: {
+            title: '登录'
+        }
     },
     {
         path: '/:pathMatch(.*)*',
         name: 'NotFound',
-        component: NotFound
+        component: NotFound,
+        meta: {
+            title: '页面丢失'
+        }
     }
 ]
 
