@@ -45,6 +45,7 @@
 import { reactive, ref } from 'vue';
 import { adminLogin } from '~/api/admin'
 import { ElNotification } from 'element-plus'
+import { useCookies } from '@vueuse/integrations/useCookies'
 import router from '~/router/index'
 
 const form = reactive({
@@ -70,7 +71,11 @@ const onSubmit = () => {
             return
         }
         adminLogin(form.username, form.password).then((res) => {
+            // 判断状态码，是否登录成功
             if (res.status === 200 && res.data.code === 0) {
+                // 将登录成功返回 token 存入 cookie
+                const cookie = useCookies()
+                cookie.set('admin-token', res.data.data.token)
                 ElNotification({
                     message: res.data.msg,
                     type: 'success',
@@ -79,14 +84,14 @@ const onSubmit = () => {
                 router.push('/')
             } else {
                 ElNotification({
-                    message: res.data.msg || '请求失败',
+                    message: res.data.msg || '登录失败',
                     type: 'error',
                     duration: 2000
                 })
             }
         }).catch((err) => {
             ElNotification({
-                message: err.response.data.msg || '请求失败',
+                message: err.response.data.message || '请求失败',
                 type: 'error',
                 duration: 2000
             })

@@ -499,6 +499,112 @@ const onSubmit = () => {
 }
 ```
 
+##### 三、使用 vueuse 保存登录状态
+
+1. 添加 依赖
+
+```json
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.1.0",
+    "@vueuse/core": "^9.13.0",
+    "@vueuse/integrations": "^9.13.0",
+    "axios": "^1.3.5",
+    "element-plus": "^2.3.3",
+    "universal-cookie": "^4.0.4",
+    "vue": "^3.2.47",
+    "vue-router": "^4.1.6"
+  },
+```
+
+2. login.vue 页面
+
+```vue
+<script setup>
+import { reactive, ref } from 'vue';
+import { adminLogin } from '~/api/admin'
+import { ElNotification } from 'element-plus'
+import { useCookies } from '@vueuse/integrations/useCookies'
+import router from '~/router/index'
+
+const form = reactive({
+    username: 'admin',
+    password: '123456'
+})
+
+const rules = {
+    username: [
+        { required: true, message: '用户名不能为空', trigger: 'blur' }
+    ],
+    password: [
+        { required: true, message: '密码不能为空', trigger: 'blur' }
+    ]
+}
+
+const formRef = ref(null)
+
+const onSubmit = () => {
+    formRef.value.validate((valid) => {
+        if (!valid) {
+            // 校验失败
+            return
+        }
+        adminLogin(form.username, form.password).then((res) => {
+            // 判断状态码，是否登录成功
+            if (res.status === 200 && res.data.code === 0) {
+                // 将登录成功返回 token 存入 cookie
+                const cookie = useCookies()
+                cookie.set('admin-token', res.data.data.token)
+                ElNotification({
+                    message: res.data.msg,
+                    type: 'success',
+                    duration: 2000
+                })
+                router.push('/')
+            } else {
+                ElNotification({
+                    message: res.data.msg || '登录失败',
+                    type: 'error',
+                    duration: 2000
+                })
+            }
+        }).catch((err) => {
+            ElNotification({
+                message: err.response.data.message || '请求失败',
+                type: 'error',
+                duration: 2000
+            })
+        })
+    })
+}
+</script>
+```
+
+3. index.vue 页面
+
+```vue
+<template>
+    <div>
+        {{ token }}
+    </div>
+</template>
+
+<script setup>
+import { useCookies } from '@vueuse/integrations/useCookies'
+import { ref } from 'vue';
+
+const cookie =  useCookies()
+const token = ref(cookie.get('admin-token'))
+</script>
+
+<style scoped>
+
+</style>
+```
+
+##### 四、axios 设置请求拦截
+
+
+
 ## 三、后台管理 Layout 布局开发
 
 
