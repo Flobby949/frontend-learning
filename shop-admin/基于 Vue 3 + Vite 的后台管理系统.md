@@ -603,6 +603,254 @@ const token = ref(cookie.get('admin-token'))
 
 ##### 四、axios 设置请求拦截
 
+1. axios.js 添加请求拦截以及响应拦截
+
+```js
+import { useCookies } from '@vueuse/integrations/useCookies'
+import { ElNotification } from 'element-plus'
+
+// 请求拦截
+service.interceptors.request.use(function (config) {
+    // 从 cookie 中取出 token
+    const cookie = useCookies()
+    const token = cookie.get('admin-token')
+
+    // 如果不为空，向 header 中添加 token
+    if (token) {
+        config.headers['token'] = token
+    }
+    return config
+}, function(err) {
+    // 对于请求出错
+    return Promise.reject(err)
+})
+
+// 响应拦截
+service.interceptors.response.use(function(res) {
+    // 对于响应数据处理
+    return res.data
+}, function(err) {
+    ElNotification({
+        message: err.response.data.message || '请求失败',
+        type: 'error',
+        duration: 2000
+    })
+    return Promise.reject(err)
+})
+```
+
+2. 修改 login.vue 
+
+```vue
+<script setup>
+import { reactive, ref } from 'vue';
+import { adminLogin } from '~/api/admin'
+import { ElNotification } from 'element-plus'
+import { useCookies } from '@vueuse/integrations/useCookies'
+import router from '~/router/index'
+
+const form = reactive({
+    username: 'admin',
+    password: '123456'
+})
+
+const rules = {
+    username: [
+        { required: true, message: '用户名不能为空', trigger: 'blur' }
+    ],
+    password: [
+        { required: true, message: '密码不能为空', trigger: 'blur' }
+    ]
+}
+
+const formRef = ref(null)
+const loading = ref(false)
+
+const onSubmit = () => {
+    formRef.value.validate((valid) => {
+        if (!valid) {
+            // 校验失败
+            return
+        }
+        loading.value = true
+        adminLogin(form.username, form.password).then((res) => {
+            // 判断状态码，是否登录成功
+            if (res.code === 0) {
+                // 将登录成功返回 token 存入 cookie
+                const cookie = useCookies()
+                cookie.set('admin-token', res.data.token)
+                ElNotification({
+                    message: res.msg,
+                    type: 'success',
+                    duration: 2000
+                })
+                router.push('/')
+            } else {
+                ElNotification({
+                    message: res.msg || '登录失败',
+                    type: 'error',
+                    duration: 2000
+                })
+            }
+        }).finally(() => {
+            loading.value = false
+        })
+    })
+}
+</script>
+```
+
+##### 五、封装 token & ElNotification 公共方法
+
+新建 src/utils 包
+
+1. 改造token存取移除方法，新建 token.js
+
+```js
+// utils.js
+
+import { useCookies } from '@vueuse/integrations/useCookies'
+const tokenKey = 'admin-token'
+const cookie = useCookies()
+
+// 获取token
+export function getToken() {
+    return cookie.get(tokenKey)
+}
+
+// 设置token
+export function setToken(token) {
+    cookie.set(tokenKey, token)
+}
+
+export function removeToken() {
+    cookie.remove(tokenKey)
+}
+
+// ----------------------------------------
+
+// login.vue
+import { setToken } from '~/utils/token.js'
+
+const onSubmit = () => {
+    formRef.value.validate((valid) => {
+        if (!valid) {
+            // 校验失败
+            return
+        }
+        loading.value = true
+        adminLogin(form.username, form.password).then((res) => {
+            // 判断状态码，是否登录成功
+            if (res.code === 0) {
+                // 将登录成功返回 token 存入 cookie
+                setToken(res.data.token)
+                ElNotification({
+                    message: res.msg,
+                    type: 'success',
+                    duration: 2000
+                })
+                router.push('/')
+            } else {
+                ElNotification({
+                    message: res.msg || '登录失败',
+                    type: 'error',
+                    duration: 2000
+                })
+            }
+        }).finally(() => {
+            loading.value = false
+        })
+    })
+}
+
+
+// --------------------------------------
+// index.vue
+import { getToken } from '~/utils/token.js'
+
+const token = ref(getToken())
+
+
+// --------------------------------------
+// axios.js
+import { getToken } from '~/utils/token.js'
+
+// 请求拦截
+service.interceptors.request.use(function (config) {
+    // 从 cookie 中取出 token
+    const token = getToken()
+
+    // 如果不为空，向 header 中添加 token
+    if (token) {
+        config.headers['token'] = token
+    }
+    return config
+}, function(err) {
+    // 对于请求出错
+    return Promise.reject(err)
+})
+```
+
+2. 封装 弹窗 组件，utils包下新建 toast.js
+
+```js
+// toast.js
+// 封装消息提示组件
+import { ElNotification } from 'element-plus'
+
+// 封装 弹窗消息
+export function toast(message, type = 'success', duration = 2000) {
+    ElNotification({
+        message,
+        type,
+        duration
+    })
+}
+
+
+// --------------------------------------
+// axios.js
+import { toast } from '~/utils/toast'
+
+// 响应拦截
+service.interceptors.response.use(function(res) {
+    // 对于响应数据处理
+    return res.data
+}, function(err) {
+    toast(err.response.data.message || '请求失败', 'error')
+    return Promise.reject(err)
+})
+
+
+// --------------------------------------
+// login.vue
+import { toast } from '~/utils/toast'
+const onSubmit = () => {
+    formRef.value.validate((valid) => {
+        if (!valid) {
+            // 校验失败
+            return
+        }
+        loading.value = true
+        adminLogin(form.username, form.password).then((res) => {
+            // 判断状态码，是否登录成功
+            if (res.code === 0) {
+                // 将登录成功返回 token 存入 cookie
+                setToken(res.data.token)
+                toast(res.msg)
+                router.push('/')
+            } else {
+                toast(res.msg || '登录失败', 'error')
+            }
+        }).finally(() => {
+            loading.value = false
+        })
+    })
+}
+```
+
+##### 六、全局路由拦截
+
 
 
 ## 三、后台管理 Layout 布局开发
