@@ -34,7 +34,7 @@
                         </el-input>
                     </el-form-item>
 
-                    <el-button type="primary" class="w-80" @click="onSubmit">登 录</el-button>
+                    <el-button type="primary" class="w-80" @click="onSubmit" :loading="loading">登 录</el-button>
                 </el-form>
             </el-col>
         </el-row>
@@ -63,6 +63,7 @@ const rules = {
 }
 
 const formRef = ref(null)
+const loading = ref(false)
 
 const onSubmit = () => {
     formRef.value.validate((valid) => {
@@ -70,31 +71,28 @@ const onSubmit = () => {
             // 校验失败
             return
         }
+        loading.value = true
         adminLogin(form.username, form.password).then((res) => {
             // 判断状态码，是否登录成功
-            if (res.status === 200 && res.data.code === 0) {
+            if (res.code === 0) {
                 // 将登录成功返回 token 存入 cookie
                 const cookie = useCookies()
-                cookie.set('admin-token', res.data.data.token)
+                cookie.set('admin-token', res.data.token)
                 ElNotification({
-                    message: res.data.msg,
+                    message: res.msg,
                     type: 'success',
                     duration: 2000
                 })
                 router.push('/')
             } else {
                 ElNotification({
-                    message: res.data.msg || '登录失败',
+                    message: res.msg || '登录失败',
                     type: 'error',
                     duration: 2000
                 })
             }
-        }).catch((err) => {
-            ElNotification({
-                message: err.response.data.message || '请求失败',
-                type: 'error',
-                duration: 2000
-            })
+        }).finally(() => {
+            loading.value = false
         })
     })
 }
