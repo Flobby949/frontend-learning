@@ -44,10 +44,14 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import { adminLogin } from '~/api/admin'
-import router from '~/router/index'
+import router from '~/router'
+import { useAdmin } from '~/store'
 
 import { setToken } from '~/utils/token'
 import { toast } from '~/utils/toast'
+
+const store = useAdmin()
+const { setStoreToken } = store
 
 const form = reactive({
     username: 'admin',
@@ -78,6 +82,7 @@ const onSubmit = () => {
             if (res.code === 0) {
                 // 将登录成功返回 token 存入 cookie
                 setToken(res.data.token)
+                setStoreToken(res.data.token)
                 toast(res.msg)
                 router.push('/')
             } else {

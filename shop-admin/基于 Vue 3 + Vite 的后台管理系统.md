@@ -947,6 +947,120 @@ router.beforeEach((to, from, next) => {
 })
 ```
 
+##### 七、集成 Pinia 状态存储
+
+1. 添加依赖
+
+```json
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.1.0",
+    "@vueuse/core": "^9.13.0",
+    "@vueuse/integrations": "^9.13.0",
+    "axios": "^1.3.5",
+    "element-plus": "^2.3.3",
+    "pinia": "^2.0.34",
+    "universal-cookie": "^4.0.4",
+    "vue": "^3.2.47",
+    "vue-router": "^4.1.6"
+  },
+```
+
+2. 创建 src/store/index.js
+
+```js
+import { defineStore } from 'pinia'
+
+export const useAdmin = defineStore('admin', {
+    state: () => ({
+        token: '',
+        admin: {
+            id: 0,
+            role: '',
+            nickname: '',
+            avatar: ''
+        },
+    }),
+    actions: {
+        setStoreToken(token) {
+            this.token = token
+        },
+        changeAvatar (avatar) {
+            this.admin.avatar = avatar
+        }
+    }
+})
+```
+
+3. main.js 引入 pinia
+
+```js
+import { createPinia } from 'pinia'
+
+app.use(createPinia())
+```
+
+4. login.vue 登录时保存token
+
+```js
+import { useAdmin } from '~/store'
+
+const store = useAdmin()
+const { setStoreToken } = store
+
+const onSubmit = () => {
+    formRef.value.validate((valid) => {
+        if (!valid) {
+            // 校验失败
+            return
+        }
+        loading.value = true
+        adminLogin(form.username, form.password).then((res) => {
+            // 判断状态码，是否登录成功
+            if (res.code === 0) {
+                // 将登录成功返回 token 存入 cookie
+                setToken(res.data.token)
+                setStoreToken(res.data.token)
+                toast(res.msg)
+                router.push('/')
+            } else {
+                toast(res.msg || '登录失败', 'error')
+            }
+        }).finally(() => {
+            loading.value = false
+        })
+    })
+}
+```
+
+5. index.vue 取出 token
+
+```vue
+<template>
+    <div>
+        {{ tokenStr }}
+    </div>
+    <div>
+        {{ token }}
+    </div>
+</template>
+
+<script setup>
+
+import { getToken } from '~/utils/token.js'
+import { ref } from 'vue';
+
+import { useAdmin } from '~/store'
+import { storeToRefs } from 'pinia'
+
+const store = useAdmin()
+const tokenStr = ref(getToken())
+
+const { token, admin } = storeToRefs(store)
+</script>
+```
+
+
+
 ## 三、后台管理 Layout 布局开发
 
 
