@@ -12,10 +12,10 @@
                     <span class="mx-2 ">账号密码登录</span>
                     <span class="h-[1px] w-1/5 bg-gray-200"></span>
                 </div>
-                <el-form label-width="120px" label-position="left">
+                <el-form :model="form" label-width="120px" label-position="left" ref="formRef" :rules="rules">
 
-                    <el-form-item label="Username">
-                        <el-input type="text" placeholder="请输入账号">
+                    <el-form-item label="Username" prop="username">
+                        <el-input type="text" placeholder="请输入账号" v-model="form.username">
                             <template #prefix>
                                 <el-icon>
                                     <user />
@@ -24,8 +24,8 @@
                         </el-input>
                     </el-form-item>
 
-                    <el-form-item label="Password">
-                        <el-input type="password" placeholder="请输入密码">
+                    <el-form-item label="Password" prop="password">
+                        <el-input type="password" placeholder="请输入密码" v-model="form.password">
                             <template #prefix>
                                 <el-icon>
                                     <lock />
@@ -34,7 +34,7 @@
                         </el-input>
                     </el-form-item>
 
-                    <el-button type="primary" class="w-80">登 录</el-button>
+                    <el-button type="primary" class="w-80" @click="onSubmit">登 录</el-button>
                 </el-form>
             </el-col>
         </el-row>
@@ -42,6 +42,33 @@
 </template>
 
 <script setup>
+import { reactive, ref } from 'vue';
+
+const form = reactive({
+    username: '',
+    password: ''
+})
+
+const rules = {
+    username: [
+        { required: true, message: '用户名不能为空', trigger: 'blur' }
+    ],
+    password: [
+        { required: true, message: '密码不能为空', trigger: 'blur' }
+    ]
+}
+
+const formRef = ref(null)
+
+const onSubmit = () => {
+    formRef.value.validate((valid) => {
+        if (!valid) {
+            // 校验失败
+            return
+        }
+        console.log('验证通过');
+    })
+}
 </script>
 
 <style scoped>

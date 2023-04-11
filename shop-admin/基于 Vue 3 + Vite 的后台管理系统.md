@@ -251,6 +251,8 @@ export default router
 
 ## 二、登录页开发和功能实现
 
+#### 一、页面实现
+
 1. 新建 login.vue 页面，并且在路由文件中注册页面
 2. 简单页面实现
 
@@ -334,6 +336,76 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     </el-input>
 </el-form-item>
 ```
+
+#### 二、添加表单校验
+
+1. 添加表单规则
+
+```js
+import { reactive, ref } from 'vue';
+
+// 定义表单提交对象
+const form = reactive({
+    username: '',
+    password: ''
+})
+
+// 绑定表单规则
+const rules = {
+    username: [
+        { required: true, message: '用户名不能为空', trigger: 'blur' }
+    ],
+    password: [
+        { required: true, message: '密码不能为空', trigger: 'blur' }
+    ]
+}
+
+// 定义表单元素dom
+const formRef = ref(null)
+
+// 点击事件
+const onSubmit = () => {
+    formRef.value.validate((valid) => {
+        if (!valid) {
+            // 校验失败
+            return
+        }
+        console.log('验证通过');
+    })
+}
+```
+
+2. 页面绑定规则
+
+```html
+<!-- model 绑定表单内容对象 、 rules 绑定规则 、 ref 绑定表单元素 -->
+<el-form :model="form" label-width="120px" label-position="left" ref="formRef" :rules="rules">
+    <!-- prop 绑定表单规则对象 -->
+    <el-form-item label="Username" prop="username">
+        <el-input type="text" placeholder="请输入账号" v-model="form.username">
+            <template #prefix>
+                <el-icon>
+                    <user />
+                </el-icon>
+            </template>
+        </el-input>
+    </el-form-item>
+    <!-- prop 绑定表单规则对象 -->
+    <el-form-item label="Password" prop="password">
+        <el-input type="password" placeholder="请输入密码" v-model="form.password">
+            <template #prefix>
+                <el-icon>
+                    <lock />
+                </el-icon>
+            </template>
+        </el-input>
+    </el-form-item>
+    <!-- 绑定点击事件 -->
+    <el-button type="primary" class="w-80" @click="onSubmit">登 录</el-button>
+</el-form>
+```
+
+
 
 
 
