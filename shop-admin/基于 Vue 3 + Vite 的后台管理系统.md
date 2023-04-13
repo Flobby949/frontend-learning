@@ -1534,7 +1534,38 @@ const {
 
 ### 五、修改密码抽屉
 
+> 修改 FHeader.vue
 
+```vue
+<template>    
+	<!-- 抽屉 -->
+    <el-drawer title="修改密码" v-model="showDrawer" size="30%" :close-on-press-escape="false">
+        <el-form label-width="80px">
+          <el-form-item label="旧密码">
+            <el-input placeholder="请输入旧密码"></el-input>
+          </el-form-item>
+          <el-form-item label="新密码">
+            <el-input placeholder="请输入新密码"></el-input>
+          </el-form-item>
+          <el-form-item label="确认密码">
+            <el-input placeholder="请确认密码"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button class="bg-indigo-500 text-light-50 w-full p-4 rounded-full">提交</el-button>
+          </el-form-item>
+        </el-form>
+    </el-drawer>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const showDrawer = ref(false)
+const rePassword = () => {
+    showDrawer.value = true
+}
+</script>
+```
 
 ## 四、Dashboard 开发和交互
 
