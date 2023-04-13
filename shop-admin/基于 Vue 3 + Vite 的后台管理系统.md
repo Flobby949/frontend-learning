@@ -1275,15 +1275,106 @@ const handleLogout = () => {
 </script>
 ```
 
-
-
-
-
 ## 三、后台管理 Layout 布局开发
 
+### 一、配置 404 页面
 
+```vue
+<!-- 404.vue -->
 
+<template>
+    <div>
+        <el-result icon="warning" title="Warning Tip" sub-title="Please follow the instructions">
+            <template #extra>
+                <el-button type="primary" @click="$router.push('/')">回到首页</el-button>
+            </template>
+        </el-result>
+    </div>
+</template>
+```
 
+### 二、后台整体布局
+
+1. 新建 src/layout 文件夹，新建 layout/components/FHeader.vue、layout/components/FMenu.vue、layout/components/FTagList.vue 文件以及 layout/admin.vue
+
+```vue
+<!-- FHeader.vue 头部内容 -->
+<template>
+    <div>
+头部
+    </div>
+</template>
+
+<script setup>
+
+</script>
+
+<style scoped>
+
+</style>
+
+<!-- FMenu.vue  菜单内容 -->
+<template>
+    <div>
+菜单
+    </div>
+</template>
+
+<script setup>
+
+</script>
+
+<style scoped>
+
+</style>
+
+<!-- FTagList.vue 面包屑导航 -->
+<template>
+    <div>
+面包屑
+    </div>
+</template>
+
+<script setup>
+
+</script>
+
+<style scoped>
+
+</style>
+
+<!-- admin.vue 整体布局 -->
+<template>
+    <el-header>
+        <f-header></f-header>
+    </el-header>
+    <el-container>
+        <el-aside>
+            <f-menu></f-menu>
+        </el-aside>
+
+        <el-main>
+            <f-tag-list></f-tag-list>
+            <router-view></router-view>
+        </el-main>
+    </el-container>
+</template>
+
+<script setup>
+import FHeader from './components/FHeader.vue';
+import FMenu from './components/FMenu.vue';
+import FTagList from './components/FTagList.vue';
+
+</script>
+
+<style scoped></style>
+```
+
+> 预览
+
+![](https://i2.100024.xyz/2023/04/13/xa7pr1.webp)
+
+### 三、头部组件
 
 ## 四、Dashboard 开发和交互
 
