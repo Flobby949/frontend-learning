@@ -13,8 +13,9 @@
             <el-icon class="icon-btn">
                 <Refresh />
             </el-icon>
-            <el-icon class="icon-btn">
-                <FullScreen />
+            <el-icon class="icon-btn" @click="toggle">
+                <FullScreen v-if="!isFullscreen"/>
+                <Aim v-else/>
             </el-icon>
             <el-icon class="icon-btn">
                 <Printer />
@@ -47,12 +48,20 @@ import { showModal, toast } from '~/composables/util'
 import { useAdminStore } from '~/store'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
+import { useFullscreen } from '@vueuse/core'
+
 
 const store = useAdminStore()
 const { getInfo, adminLogout } = store
 const { adminInfo } = storeToRefs(store)
 const router = useRouter()
 
+const { 
+    // 是否全屏状态
+    isFullscreen,
+    // 切换全屏
+     toggle 
+    } = useFullscreen()
 getInfo()
 
 const handleLogout = () => {

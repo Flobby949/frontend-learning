@@ -1492,7 +1492,45 @@ const handleLogout = () => {
 
 ### 四、全屏功能实现
 
+1. 添加 vueuse 核心依赖
 
+```json
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.1.0",
+    "@vueuse/integrations": "^9.13.0",
+    "axios": "^1.3.5",
+    "element-plus": "^2.3.3",
+    "pinia": "^2.0.34",
+    "universal-cookie": "^4.0.4",
+    "vue": "^3.2.47",
+    "vue-router": "^4.1.6",
+    "nprogress": "^0.2.0",
+    "@vueuse/core":"^9.13.0"
+  },
+```
+
+2. 修改 FHeader.vue 部分页面
+
+```vue
+<template>
+	<!-- 全屏 / 非全屏 页面按钮变化 -->
+    <el-icon class="icon-btn" @click="toggle">
+        <FullScreen v-if="!isFullscreen"/>
+        <Aim v-else/>
+    </el-icon>
+</template>
+
+<script setup>
+import { useFullscreen } from '@vueuse/core';
+    
+const { 
+    // 是否全屏状态
+    isFullscreen,
+    // 切换全屏
+     toggle 
+} = useFullscreen()
+</script>
+```
 
 ### 五、修改密码抽屉
 
