@@ -9,7 +9,7 @@
 
 <script setup>
 
-import { getToken } from '~/utils/token.js'
+import { getToken } from '~/composables/token.js'
 import { ref } from 'vue';
 
 import { useAdmin } from '~/store'

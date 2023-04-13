@@ -700,9 +700,9 @@ const onSubmit = () => {
 </script>
 ```
 
-##### 五、封装 token & ElNotification 公共方法
+##### 五、封装 token & 公共方法
 
-新建 src/utils 包
+新建 src/composables包
 
 1. 改造token存取移除方法，新建 token.js
 
@@ -791,12 +791,28 @@ service.interceptors.request.use(function (config) {
 })
 ```
 
-2. 封装 弹窗 组件，utils包下新建 toast.js
+2. 添加 进度条 依赖
+
+```json
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.1.0",
+    "@vueuse/integrations": "^9.13.0",
+    "axios": "^1.3.5",
+    "element-plus": "^2.3.3",
+    "universal-cookie": "^4.0.4",
+    "vue": "^3.2.47",
+    "vue-router": "^4.1.6",
+    "nprogress": "^0.2.0"
+  },
+```
+
+3. 封装 公共 组件，composables包下新建 util.js
 
 ```js
-// toast.js
-// 封装消息提示组件
-import { ElNotification } from 'element-plus'
+// util.js
+
+import { ElNotification, ElMessageBox } from 'element-plus'
+import nprogress from 'nprogress'
 
 // 封装 弹窗消息
 export function toast(message, type = 'success', duration = 2000) {
@@ -807,10 +823,34 @@ export function toast(message, type = 'success', duration = 2000) {
     })
 }
 
+// 封装 全局进度条
+// 显示
+export function showFullLoading() {
+    nprogress.start()
+}
+
+// 隐藏
+export function hideFullLoading() {
+    nprogress.done()
+}
+
+// 疯转全局模态提示框
+export function showModal(content = "提示内容", type = "warning", title = "") {
+    return ElMessageBox.confirm(
+        content,
+        title,
+        {
+            confirmButtonText: '确认',
+            cancelButtonText: '取消',
+            type
+        }
+    )
+}
+
 
 // --------------------------------------
 // axios.js
-import { toast } from '~/utils/toast'
+import { toast } from '~/composables/util'
 
 // 响应拦截
 service.interceptors.response.use(function(res) {
@@ -824,7 +864,7 @@ service.interceptors.response.use(function(res) {
 
 // --------------------------------------
 // login.vue
-import { toast } from '~/utils/toast'
+import { toast } from '~/composables/util'
 const onSubmit = () => {
     formRef.value.validate((valid) => {
         if (!valid) {
@@ -856,11 +896,14 @@ const onSubmit = () => {
 ```js
 import router from '~/router'
 
-import { getToken } from '~/utils/token'
-import { toast } from '~/utils/toast'
+import { getToken } from '~/composables/token'
+import { toast, showFullLoading, hideFullLoading } from '~/composables/util'
 
 // 全局路由前置守卫
 router.beforeEach((to, from, next) => {
+    // 进度条显示
+    showFullLoading()
+
     // to and from are both route objects. must call `next`.
     const token = getToken()
 
@@ -877,6 +920,13 @@ router.beforeEach((to, from, next) => {
     }
 
     next()
+})
+
+
+// 路由后置守卫
+router.afterEach((to, from) => {
+    // 隐藏导航栏
+    hideFullLoading()
 })
 ```
 
@@ -925,6 +975,10 @@ const routes = [
 // permission.js
 // 全局路由前置守卫
 router.beforeEach((to, from, next) => {
+    // 进度条显示
+    showFullLoading()
+
+    // to and from are both route objects. must call `next`.
     const token = getToken()
 
     // 目标页面不是登录页，且没有token，跳回登录页面
@@ -954,14 +1008,14 @@ router.beforeEach((to, from, next) => {
 ```json
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",
-    "@vueuse/core": "^9.13.0",
     "@vueuse/integrations": "^9.13.0",
     "axios": "^1.3.5",
     "element-plus": "^2.3.3",
     "pinia": "^2.0.34",
     "universal-cookie": "^4.0.4",
     "vue": "^3.2.47",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "nprogress": "^0.2.0"
   },
 ```
 
@@ -1046,7 +1100,7 @@ const onSubmit = () => {
 
 <script setup>
 
-import { getToken } from '~/utils/token.js'
+import { getToken } from '~/composables/token.js'
 import { ref } from 'vue';
 
 import { useAdmin } from '~/store'

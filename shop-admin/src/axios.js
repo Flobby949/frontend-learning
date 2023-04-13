@@ -1,8 +1,8 @@
 // 封装 axios 请求工具
 import axios from 'axios'
 
-import { getToken } from '~/utils/token.js'
-import { toast } from '~/utils/toast'
+import { getToken } from '~/composables/token.js'
+import { toast } from '~/composables/util'
 
 const service = axios.create({
     baseURL: 'http://127.0.0.1:4523/m1/2571699-0-default/api',

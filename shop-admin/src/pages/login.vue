@@ -47,8 +47,8 @@ import { adminLogin } from '~/api/admin'
 import router from '~/router'
 import { useAdmin } from '~/store'
 
-import { setToken } from '~/utils/token'
-import { toast } from '~/utils/toast'
+import { setToken } from '~/composables/token'
+import { toast } from '~/composables/util'
 
 const store = useAdmin()
 const { setStoreToken } = store

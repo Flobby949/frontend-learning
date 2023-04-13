@@ -1,10 +1,13 @@
 import router from '~/router'
 
-import { getToken } from '~/utils/token'
-import { toast } from '~/utils/toast'
+import { getToken } from '~/composables/token'
+import { toast, showFullLoading, hideFullLoading } from '~/composables/util'
 
 // 全局路由前置守卫
 router.beforeEach((to, from, next) => {
+    // 进度条显示
+    showFullLoading()
+
     // to and from are both route objects. must call `next`.
     const token = getToken()
 
@@ -25,4 +28,11 @@ router.beforeEach((to, from, next) => {
     document.title = title
 
     next()
+})
+
+
+// 路由后置守卫
+router.afterEach((to, from) => {
+    // 隐藏导航栏
+    hideFullLoading()
 })
