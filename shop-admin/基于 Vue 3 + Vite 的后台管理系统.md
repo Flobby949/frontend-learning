@@ -791,7 +791,7 @@ service.interceptors.request.use(function (config) {
 })
 ```
 
-2. 添加 进度条 依赖
+2. 添加 进度条 依赖，在 main.js 中引入，并且在 app.vue 中设置样式
 
 ```json
   "dependencies": {
@@ -804,6 +804,19 @@ service.interceptors.request.use(function (config) {
     "vue-router": "^4.1.6",
     "nprogress": "^0.2.0"
   },
+
+// -------------------------------
+// main.js
+import 'nprogress/nprogress.css'
+
+
+// app.vue
+<style scoped>
+#nprogress .bar {
+  background-color: #3cb6ea !important;
+  height: 5px !important;
+}
+</style>
 ```
 
 3. 封装 公共 组件，composables包下新建 util.js
@@ -1112,6 +1125,157 @@ const tokenStr = ref(getToken())
 const { token, admin } = storeToRefs(store)
 </script>
 ```
+
+##### 八、改造登录，存储管理员信息
+
+1. 新增 获取管理员接口 & 退出登录接口，并且添加成功失败的mock
+
+![](https://i2.100024.xyz/2023/04/13/w5hn0i.webp)
+
+![](https://i2.100024.xyz/2023/04/13/w5hl2t.webp)
+
+2. 改造 api/admin.js
+
+```js
+import axios from '~/axios'
+
+// 管理员登录
+export function adminLogin(username, password) {
+    return axios.post(
+        '/admin/login',
+        {
+            username,
+            password
+        }
+    )
+}
+
+// 获取用户信息
+export function getInfo() {
+    return axios.post("/admin/getInfo")
+}
+
+// 登出
+export function logout () {
+    return axios.post("/admin/logout")
+}
+```
+
+3. 改造 store/index.js
+
+```js
+import { defineStore } from 'pinia'
+import { adminLogin, getInfo, logout } from '~/api/admin'
+import { setToken, removeToken } from '~/composables/token'
+
+export const useAdminStore = defineStore('admin', {
+    state: () => ({
+        token: '',
+        adminInfo: {},
+    }),
+    actions: {
+        adminLogin(username, password) {
+            return new Promise((resolve, reject) => {
+                adminLogin(username, password).then((res) => {
+                    setToken(res.data.token)
+                    resolve(res)
+                }).catch(err => reject(err))
+            })
+        },
+        async getInfo() {
+            const res = await getInfo()
+            console.log(res)
+            this.adminInfo = res.data
+        },
+        async adminLogout() {
+            logout()
+            // 移除 cookie token
+            removeToken()
+            // 清空状态
+            this.adminInfo = {}
+        }
+    }
+})
+```
+
+4. 改造 login.vue 登录方法
+
+```js
+import { useAdminStore } from '~/store'
+
+const store = useAdminStore()
+const { adminLogin } = store
+
+const onSubmit = () => {
+    formRef.value.validate((valid) => {
+        if (!valid) {
+            // 校验失败
+            return
+        }
+        loading.value = true
+        // 使用 pinia 中解构的login方法
+        adminLogin(form.username, form.password).then((res) => {
+            toast(res.msg)
+            if (res.code === 0) {
+                router.push('/')
+            }
+            loading.value = false
+        })
+    })
+}
+
+// 监听回车
+function onKeyUp(e) {
+    if (e.key == 'Enter') onSubmit()
+}
+
+// 监听键盘
+onMounted(() => {
+    document.addEventListener("keyup", onkeyup)
+})
+// 移除键盘监听
+onBeforeMount(() => {
+    document.removeEventListener("keyup", onkeyup)
+})
+```
+
+5. 改造 index.vue 页面
+
+```vue
+<template>
+    <div class="p-3 flex space-x-5">
+        <h2>{{ adminInfo.username }}</h2>
+        <img :src="adminInfo.avatar" class="w-32 h-32 rounded-full" alt="">
+        <el-button type="primary" @click="handleLogout">退出登录</el-button>
+    </div>
+</template>
+
+<script setup>
+import { showModal, toast } from '../composables/util'
+import { storeToRefs } from 'pinia'
+import { useAdminStore } from '~/store'
+import { useRouter } from 'vue-router';
+
+const store = useAdminStore()
+const { getInfo, adminLogout } = store
+const { adminInfo } = storeToRefs(store)
+
+const router = useRouter()
+// 获取用户信息
+getInfo()
+
+const handleLogout = () => {
+    showModal("是否要退出登录？").then(() => {
+        adminLogout()
+        toast("退出登录成功")
+        router.push("/login")
+    })
+}
+
+</script>
+```
+
+
 
 
 

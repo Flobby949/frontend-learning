@@ -10,3 +10,13 @@ export function adminLogin(username, password) {
         }
     )
 }
+
+// 获取用户信息
+export function getInfo() {
+    return axios.post("/admin/getInfo")
+}
+
+// 登出
+export function logout () {
+    return axios.post("/admin/logout")
+}

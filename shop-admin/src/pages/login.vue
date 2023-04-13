@@ -42,16 +42,14 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue';
-import { adminLogin } from '~/api/admin'
+import { onBeforeMount, onMounted, reactive, ref } from 'vue';
 import router from '~/router'
-import { useAdmin } from '~/store'
+import { useAdminStore } from '~/store'
 
-import { setToken } from '~/composables/token'
 import { toast } from '~/composables/util'
 
-const store = useAdmin()
-const { setStoreToken } = store
+const store = useAdminStore()
+const { adminLogin } = store
 
 const form = reactive({
     username: 'admin',
@@ -78,21 +76,28 @@ const onSubmit = () => {
         }
         loading.value = true
         adminLogin(form.username, form.password).then((res) => {
-            // 判断状态码，是否登录成功
+            toast(res.msg)
             if (res.code === 0) {
-                // 将登录成功返回 token 存入 cookie
-                setToken(res.data.token)
-                setStoreToken(res.data.token)
-                toast(res.msg)
                 router.push('/')
-            } else {
-                toast(res.msg || '登录失败', 'error')
             }
-        }).finally(() => {
             loading.value = false
         })
     })
 }
+
+// 监听回车
+function onKeyUp(e) {
+    if (e.key == 'Enter') onSubmit()
+}
+
+// 监听键盘
+onMounted(() => {
+    document.addEventListener("keyup", onkeyup)
+})
+// 移除键盘监听
+onBeforeMount(() => {
+    document.removeEventListener("keyup", onkeyup)
+})
 </script>
 
 <style scoped>
