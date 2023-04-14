@@ -2,16 +2,13 @@ import router from '~/router'
 
 import { getToken } from '~/composables/token'
 import { toast, showFullLoading, hideFullLoading } from '~/composables/util'
-// import { useAdminStore } from './store'
-// const store = useAdminStore()
-// const { getInfo } = store
+import { useAdminStore } from '~/store'
 
 // 全局路由前置守卫
 router.beforeEach((to, from, next) => {
     // 进度条显示
     showFullLoading()
 
-    // to and from are both route objects. must call `next`.
     const token = getToken()
 
     // 目标页面不是登录页，且没有token，跳回登录页面
@@ -27,9 +24,11 @@ router.beforeEach((to, from, next) => {
     }
 
     // 如果当前用户有token，获取用户信息，保存在 pinia
-    // if (token) {
-    //     getInfo()
-    // }
+    const store = useAdminStore()
+    const { getInfo } = store
+    if (token) {
+        getInfo()
+    }
 
     // 设置页面标题
     let title = `admin - ${to.meta.title || ''}`

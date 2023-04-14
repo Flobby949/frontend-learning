@@ -41,48 +41,16 @@
 </template>
 
 <script setup>
-import { onBeforeMount, onMounted, reactive, ref } from 'vue';
-import router from '~/router'
-import { useAdminStore } from '~/store'
+import { onBeforeMount, onMounted } from 'vue';
+import { useLogin } from '~/composables/useAdmin'
 
-import { toast } from '~/composables/util'
-
-const store = useAdminStore()
-const { adminLogin } = store
-
-const form = reactive({
-    username: 'admin',
-    password: '123456'
-})
-
-const rules = {
-    username: [
-        { required: true, message: '用户名不能为空', trigger: 'blur' }
-    ],
-    password: [
-        { required: true, message: '密码不能为空', trigger: 'blur' }
-    ]
-}
-
-const formRef = ref(null)
-const loading = ref(false)
-
-const onSubmit = () => {
-    formRef.value.validate((valid) => {
-        if (!valid) {
-            // 校验失败
-            return
-        }
-        loading.value = true
-        adminLogin(form.username, form.password).then((res) => {
-            toast(res.msg)
-            if (res.code === 0) {
-                router.push('/')
-            }
-            loading.value = false
-        })
-    })
-}
+const {
+    form,
+    rules,
+    formRef,
+    loading,
+    onSubmit
+} = useLogin()
 
 // 监听回车
 function onKeyUp(e) {
@@ -91,18 +59,19 @@ function onKeyUp(e) {
 
 // 监听键盘
 onMounted(() => {
-    document.addEventListener("keyup", onkeyup)
+    document.addEventListener("keyup", onKeyUp)
 })
 // 移除键盘监听
 onBeforeMount(() => {
-    document.removeEventListener("keyup", onkeyup)
-})
+    document.removeEventListener("keyup", onKeyUp)
+});
 </script>
 
 <style scoped>
 .bg-img {
     background-image: url('../assets/images/login_background.png');
 }
+
 .col-center {
     @apply flex flex-col justify-center items-center
 }

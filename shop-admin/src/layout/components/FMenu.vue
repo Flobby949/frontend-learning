@@ -9,11 +9,10 @@ import { useAdminStore } from '~/store'
 import { storeToRefs } from 'pinia'
 const store = useAdminStore()
 const { asideWidth } = storeToRefs(store);
-
 </script>
 
 <style scoped>
 .side {
-    @apply h-[calc(100vh-60px)] bg-blue-300
+    @apply h-[calc(100vh-60px)] bg-blue-300 transition-all duration-300
 }
 </style>

@@ -1674,7 +1674,510 @@ const update = () => {
 </script>
 ```
 
+### 四、封装自定义抽屉，实现修改密码
 
+1. 新建 src/components/FormDrawer.vue 组件
+
+```vue
+<template>
+    <el-drawer v-model="showDrawer" 
+               :title="title" 
+               :size="size + '%'" 
+               :destroy-on-close="destroyOnClose" 
+               :close-on-click-modal="closeOnClickModal">
+        <div class="form-drawer">
+            <div class="body">
+                <slot></slot>
+            </div>
+
+            <div class="actions">
+                <el-button type="default" @click="closeDrawer">取消</el-button>
+                <el-button type="primary" @click="submit" :loading="loading">{{ confirmText }}</el-button>
+            </div>
+        </div>
+    </el-drawer>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+defineProps({
+    title: {
+        type: String,
+        default: '标题'
+    },
+    // 关闭后销毁子元素
+    destroyOnClose: {
+        type: Boolean,
+        default: true
+    },
+    size: {
+        type: [String, Number],
+        default: 30
+    },
+    // 点击遮罩层关闭
+    closeOnClickModal: {
+        type: Boolean,
+        default: false
+    },
+    confirmText: {
+        type: String,
+        default: '提交'
+    }
+})
+// 抽屉显示
+const showDrawer = ref(false);
+const openDrawer = () => showDrawer.value = true
+const closeDrawer = () => showDrawer.value = false
+// 提交按钮加载显示
+const loading = ref(false)
+const showLoading = () => loading.value = true
+const hideLoading = () => loading.value = false
+
+// 提交事件
+const emit = defineEmits(['submit'])
+const submit = () => emit('submit')
+
+// 向父组件暴露 方法
+defineExpose({
+    openDrawer, closeDrawer, showLoading, hideLoading
+});
+</script>
+
+<style scoped>
+.form-drawer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.form-drawer .body {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.form-drawer .actions {
+    width: 100%;
+    height: 60px;
+    @apply mt-auto flex items-center
+}
+
+.el-button {
+    flex: 1
+}
+</style>
+```
+
+2. FHeader.vue 引入，并改造代码
+
+```vue
+<template>
+    <!-- 抽屉 -->
+    <form-drawer ref="formDrawerRef" title="修改密码" @submit="update">
+        <el-form label-width="80px" :rules="rules" label-position="left" :model="updatePasswordForm" ref="formRef">
+            <el-form-item label="旧密码" prop="oldPassword">
+                <el-input v-model="updatePasswordForm.oldPassword" placeholder="请输入旧密码"></el-input>
+            </el-form-item>
+            <el-form-item label="新密码" prop="newPassword">
+                <el-input v-model="updatePasswordForm.newPassword" placeholder="请输入新密码"></el-input>
+            </el-form-item>
+            <el-form-item label="确认密码" prop="rePassword">
+                <el-input v-model="updatePasswordForm.rePassword" placeholder="请确认密码"></el-input>
+            </el-form-item>
+        </el-form>
+    </form-drawer>
+</template>
+
+<script setup>
+import FormDrawer from '~/components/FormDrawer.vue'
+
+const update = () => {
+    formRef.value.validate((valid) => {
+        if (!valid) {
+            return
+        }
+        formDrawerRef.value.showLoading()
+        updatePassword(
+            updatePasswordForm.oldPassword,
+            updatePasswordForm.newPassword).then((res) => {
+                if (res.code === 0) {
+                    toast('修改成功，请重新登录')
+                    adminLogout().then(() => router.push('/login'))
+                } else {
+                    toast(res.msg, 'error')
+                }
+            }).finally(() => {
+                formDrawerRef.value.hideLoading()
+            })
+    })
+}
+
+// 自定义抽屉
+const formDrawerRef = ref(null);
+
+</script>
+
+<style scoped>
+.icon-btn {
+    @apply flex justify-center items-center mx-1 cursor-pointer text-[40px] p-2
+}
+
+.icon-btn:hover {
+    @apply bg-indigo-300
+}
+</style>
+```
+
+### 五、使用组合式api简化代码
+
+1. 新建 src/composables/useAdmin.js
+
+```js
+import { ref, reactive } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAdminStore } from '~/store'
+import { showModal, toast } from './util'
+import { updatePassword } from '~/api/admin'
+import { storeToRefs } from 'pinia'
+
+
+export function useUpdatePassword() {
+    const router = useRouter()
+    const store = useAdminStore()
+    const { adminLogout } = store
+
+    const updatePasswordForm = reactive({
+        oldPassword: '',
+        newPassword: '',
+        rePassword: ''
+    })
+    const formRef = ref(null)
+
+    // 确认密码规则
+    const rePassRule = (rule, value, callback) => {
+        if (value === '') {
+            callback(new Error('确认密码不能为空'))
+        } else if (value !== updatePasswordForm.newPassword) {
+            callback(new Error('与新密码不一致'))
+        } else {
+            callback()
+        }
+    }
+
+    // 规则
+    const rules = {
+        oldPassword: [
+            { required: true, message: '旧密码不能为空', trigger: 'blur' }
+        ],
+        newPassword: [
+            { required: true, message: '新密码不能为空', trigger: 'blur' },
+            { min: 6, max: 16, message: '长度在 6 到 16 个字符', trigger: 'blur' }
+        ],
+        rePassword: [
+            { required: true, validator: rePassRule, trigger: 'blur' }
+        ]
+    }
+
+    const formDrawerRef = ref(null);
+
+    const update = () => {
+        formRef.value.validate((valid) => {
+            if (!valid) {
+                return
+            }
+            formDrawerRef.value.showLoading()
+            updatePassword(updatePasswordForm.oldPassword, updatePasswordForm.newPassword).then((res) => {
+                if (res.code === 0) {
+                    toast('修改成功，请重新登录')
+                    adminLogout().then(() => router.push('/login'))
+                } else {
+                    toast(res.msg, 'error')
+                }
+            }).finally(() => {
+                formDrawerRef.value.hideLoading()
+            })
+        })
+    }
+
+    const showPasswordDrawer = () => {
+        formDrawerRef.value.openDrawer()
+    };
+
+    return {
+        updatePasswordForm,
+        formRef,
+        rules,
+        formDrawerRef,
+        update,
+        showPasswordDrawer
+    }
+}
+
+export function useLogin() {
+    const router = useRouter()
+    const store = useAdminStore()
+    const { adminLogin } = store
+
+    const form = reactive({
+        username: 'admin',
+        password: '123456'
+    })
+    
+    const rules = {
+        username: [
+            { required: true, message: '用户名不能为空', trigger: 'blur' }
+        ],
+        password: [
+            { required: true, message: '密码不能为空', trigger: 'blur' }
+        ]
+    }
+    
+    const formRef = ref(null)
+    const loading = ref(false)
+    
+    const onSubmit = () => {
+        formRef.value.validate((valid) => {
+            if (!valid) {
+                // 校验失败
+                return
+            }
+            loading.value = true
+            adminLogin(form.username, form.password).then((res) => {
+                toast(res.msg)
+                if (res.code === 0) {
+                    router.push('/')
+                }
+                loading.value = false
+            })
+        })
+    }
+
+    return {
+        form,
+        rules,
+        formRef,
+        loading,
+        onSubmit
+    }
+}
+
+export function useLogout() {
+    const router = useRouter()
+    const store = useAdminStore()
+    const { adminLogout } = store
+
+    const handleLogout = () => {
+        showModal('是否要退出系统?').then(() => {
+            adminLogout().then(() => {
+                toast('退出登录成功')
+                router.push('/login')
+            })
+        })
+    }
+
+    return {
+        handleLogout
+    }
+}
+
+export function useGetAdminInfo() {
+    const store = useAdminStore()
+    const { getInfo } = store
+    const { adminInfo } = storeToRefs(store)
+    return {
+        getInfo,
+        adminInfo
+    }
+}
+```
+
+2. 修改 premission.js
+
+```js
+import { useAdminStore } from '~/store'
+
+// 全局路由前置守卫
+router.beforeEach((to, from, next) => {
+    // 进度条显示
+    showFullLoading()
+
+    const token = getToken()
+
+    // 目标页面不是登录页，且没有token，跳回登录页面
+    if (!token && to.path != '/login') {
+        toast('请先登录', 'error')
+        return next({ path: '/login' })
+    }
+
+    // 防止重复登录
+    if (to.path == '/login' && token) {
+        toast('请勿重复登录', 'error')
+        return next({ path: from.path || '/' })
+    }
+
+    // 如果当前用户有token，获取用户信息，保存在 pinia
+    const store = useAdminStore()
+    const { getInfo } = store
+    if (token) {
+        getInfo()
+    }
+
+    // 设置页面标题
+    let title = `admin - ${to.meta.title || ''}`
+    document.title = title
+
+    next()
+})
+```
+
+3. 改造 FHeader.vue
+
+```vue
+<script setup>
+import { useAdminStore } from '~/store'
+import { storeToRefs } from 'pinia'
+import { useFullscreen } from '@vueuse/core'
+import FormDrawer from '~/components/FormDrawer.vue'
+import { useLogout, useUpdatePassword } from '~/composables/useAdmin'
+
+const store = useAdminStore()
+const { handleAsideWidth } = store
+const { adminInfo, asideWidth, isShrink } = storeToRefs(store)
+
+// 自定义use
+const { handleLogout } = useLogout()
+const { updatePasswordForm,
+    formRef,
+    rules,
+    formDrawerRef,
+    update,
+    showPasswordDrawer } = useUpdatePassword()
+
+// vueuse
+const {
+    // 是否全屏状态
+    isFullscreen,
+    // 切换全屏
+    toggle
+} = useFullscreen();
+</script>
+```
+
+4. 改造 login.vue
+
+```vue
+<script setup>
+import { onBeforeMount, onMounted } from 'vue';
+import { useLogin } from '~/composables/useAdmin'
+
+const {
+    form,
+    rules,
+    formRef,
+    loading,
+    onSubmit
+} = useLogin()
+
+// 监听回车
+function onKeyUp(e) {
+    if (e.key == 'Enter') onSubmit()
+}
+
+// 监听键盘
+onMounted(() => {
+    document.addEventListener("keyup", onKeyUp)
+})
+// 移除键盘监听
+onBeforeMount(() => {
+    document.removeEventListener("keyup", onKeyUp)
+});
+</script>
+```
+
+4. 测试是否成功
+
+## 六、侧边菜单实现
+
+### 一、侧边伸缩demo
+
+1. 在 store/index.js 中新增一些功能，定义伸缩的侧边宽度，伸缩状态以及改变伸缩状态的方法
+
+```js
+ 	state: () => ({
+        asideWidth: '220px',
+        isShrink: false
+    }),
+    actions: {
+        // 切换 侧边栏菜单宽度
+        handleAsideWidth() {
+            this.asideWidth = this.asideWidth === '220px' ? '80px' : '220px'
+            this.isShrink = !this.isShrink
+        }
+    }
+```
+
+2. 改造 FHeader.vue
+
+```vue
+<template>
+    <div class="v-center bg-indigo-700 text-light-50 fixed top-0 left-0 right-0 h-16">
+        <!-- 收起时改变宽度 -->
+        <div class="f-center ml-2 text-xl" :style="{width: asideWidth}">
+            <el-icon class="mr-1 text-3xl">
+                <ElementPlus />
+            </el-icon>
+            <!-- 收起时不显示文字 -->
+            <span v-show="!isShrink">极客空间</span>
+        </div>
+    </div>
+	<!-- 收起修改图标 -->
+    <el-icon class="icon-btn" @click="handleAsideWidth">
+        <Fold v-if="!isShrink" />
+        <Expand v-else/>
+    </el-icon>
+</template>
+
+<script setup>
+import { useAdminStore } from '~/store'
+import { storeToRefs } from 'pinia'
+const store = useAdminStore()
+const { adminInfo, asideWidth, isShrink } = storeToRefs(store)
+const { getInfo, adminLogout, handleAsideWidth } = store
+</script>
+```
+
+3. 修改 FMenu.vue，查看效果
+
+```vue
+<template>
+    <div class="side" :style="{width: asideWidth}">
+        菜单
+    </div>
+</template>
+
+<script setup>
+import { useAdminStore } from '~/store'
+import { storeToRefs } from 'pinia'
+const store = useAdminStore()
+const { asideWidth } = storeToRefs(store);
+</script>
+
+<style scoped>
+.side {
+    @apply h-[calc(100vh-60px)] bg-blue-300 transition-all duration-300
+}
+</style>
+```
+
+4. 效果
+
+![](https://i2.100024.xyz/2023/04/14/nmgoi6.gif)
 
 # 四、Dashboard 开发和交互
 

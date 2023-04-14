@@ -1,14 +1,14 @@
 <template>
     <div class="v-center bg-indigo-700 text-light-50 fixed top-0 left-0 right-0 h-16">
-        <div class="f-center ml-2 text-xl" :style="{width: asideWidth}">
-            <el-icon class="mr-1 text-3xl">
+        <div class="f-center ml-2 text-xl transition-all duration-300" :style="{ width: asideWidth }">
+            <el-icon class="text-3xl">
                 <ElementPlus />
             </el-icon>
             <span v-show="!isShrink">极客空间</span>
         </div>
         <el-icon class="icon-btn" @click="handleAsideWidth">
             <Fold v-if="!isShrink" />
-            <Expand v-else/>
+            <Expand v-else />
         </el-icon>
         <div class="v-center ml-auto">
             <el-icon class="icon-btn">
@@ -35,7 +35,7 @@
                 </span>
                 <template #dropdown>
                     <el-dropdown-menu>
-                        <el-dropdown-item @click="rePassword">修改密码</el-dropdown-item>
+                        <el-dropdown-item @click="showPasswordDrawer">修改密码</el-dropdown-item>
                         <el-dropdown-item @click="handleLogout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </template>
@@ -60,97 +60,32 @@
 </template>
 
 <script setup>
-import { showModal, toast } from '~/composables/util'
 import { useAdminStore } from '~/store'
-import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useFullscreen } from '@vueuse/core'
-import { reactive, ref } from 'vue'
-import { updatePassword } from '~/api/admin'
 import FormDrawer from '~/components/FormDrawer.vue'
+import { useLogout, useUpdatePassword } from '~/composables/useAdmin'
 
 const store = useAdminStore()
-const { getInfo, adminLogout, handleAsideWidth } = store
+const { handleAsideWidth } = store
 const { adminInfo, asideWidth, isShrink } = storeToRefs(store)
-const router = useRouter()
 
+// 自定义use
+const { handleLogout } = useLogout()
+const { updatePasswordForm,
+    formRef,
+    rules,
+    formDrawerRef,
+    update,
+    showPasswordDrawer } = useUpdatePassword()
+
+// vueuse
 const {
     // 是否全屏状态
     isFullscreen,
     // 切换全屏
     toggle
-} = useFullscreen()
-getInfo()
-
-const handleLogout = () => {
-    showModal("是否要退出登录？").then(() => {
-        adminLogout().then(() => {
-            toast('退出登录成功')
-            router.push('/login')
-        })
-    })
-}
-
-const rePassword = () => {
-    formDrawerRef.value.openDrawer()
-}
-
-const formRef = ref(null)
-const updatePasswordForm = reactive({
-    oldPassword: '',
-    newPassword: '',
-    rePassword: ''
-})
-
-// 确认密码规则
-const rePassRule = (rule, value, callback) => {
-    if (value === '') {
-        callback(new Error('确认密码不能为空'))
-    } else if (value !== updatePasswordForm.newPassword) {
-        callback(new Error('与新密码不一致'))
-    } else {
-        callback()
-    }
-}
-
-// 规则
-const rules = {
-    oldPassword: [
-        { required: true, message: '旧密码不能为空', trigger: 'blur' }
-    ],
-    newPassword: [
-        { required: true, message: '新密码不能为空', trigger: 'blur' },
-        { min: 6, max: 16, message: '长度在 6 到 16 个字符', trigger: 'blur' }
-    ],
-    rePassword: [
-        { required: true, validator: rePassRule, trigger: 'blur' }
-    ]
-}
-
-const update = () => {
-    formRef.value.validate((valid) => {
-        if (!valid) {
-            return
-        }
-        formDrawerRef.value.showLoading()
-        updatePassword(
-            updatePasswordForm.oldPassword,
-            updatePasswordForm.newPassword).then((res) => {
-                if (res.code === 0) {
-                    toast('修改成功，请重新登录')
-                    adminLogout().then(() => router.push('/login'))
-                } else {
-                    toast(res.msg, 'error')
-                }
-            }).finally(() => {
-                formDrawerRef.value.hideLoading()
-            })
-    })
-}
-
-// 自定义抽屉
-const formDrawerRef = ref(null);
-
+} = useFullscreen();
 </script>
 
 <style scoped>
