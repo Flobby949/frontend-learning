@@ -6,18 +6,18 @@ import { toast } from '~/composables/util'
 
 const service = axios.create({
     baseURL: 'http://127.0.0.1:4523/m1/2571699-0-default',
-
+    timeout: 30000
 })
 
 // 请求拦截
 service.interceptors.request.use(function (config) {
     // 从 cookie 中取出 token
     const token = getToken()
-
     // 如果不为空，向 header 中添加 token
     if (token) {
         config.headers['token'] = token
     }
+    console.log(JSON.parse(JSON.stringify(config)))
     return config
 }, function(err) {
     // 对于请求出错
@@ -26,6 +26,7 @@ service.interceptors.request.use(function (config) {
 
 // 响应拦截
 service.interceptors.response.use(function(res) {
+    console.log(res.data)
     // 对于响应数据处理
     return res.data
 }, function(err) {

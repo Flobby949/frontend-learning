@@ -1,19 +1,18 @@
 <template>
     <div>
         <el-row class="box-border w-screen h-screen">
-            <el-col :span="16" class="bg-blue-400 text-white col-center">
+            <el-col :span="16" class="bg-img text-white col-center">
                 <span class="text-5xl font-bold mb-10">管 理 系 统</span>
                 <span class="text-3xl">shop-admin</span>
             </el-col>
-            <el-col :span="8" class="col-center">
+            <el-col :span="8" class="col-center bg-transparent">
                 <h2 class="text-3xl font-bold">登录</h2>
                 <div class="text-sm text-gray-500 flex w-full justify-center items-center p-5">
-                    <span class="h-[1px] w-1/5 bg-gray-200"></span>
+                    <span class="h-[1px] w-1/5"></span>
                     <span class="mx-2 ">账号密码登录</span>
-                    <span class="h-[1px] w-1/5 bg-gray-200"></span>
+                    <span class="h-[1px] w-1/5"></span>
                 </div>
                 <el-form :model="form" label-width="120px" label-position="left" ref="formRef" :rules="rules">
-
                     <el-form-item label="Username" prop="username">
                         <el-input type="text" placeholder="请输入账号" v-model="form.username">
                             <template #prefix>
@@ -101,6 +100,9 @@ onBeforeMount(() => {
 </script>
 
 <style scoped>
+.bg-img {
+    background-image: url('../assets/images/login_background.png');
+}
 .col-center {
     @apply flex flex-col justify-center items-center
 }

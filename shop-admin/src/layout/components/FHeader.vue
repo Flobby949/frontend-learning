@@ -1,13 +1,14 @@
 <template>
     <div class="v-center bg-indigo-700 text-light-50 fixed top-0 left-0 right-0 h-16">
-        <div class="v-center text-xl w-48 ml-2">
+        <div class="f-center ml-2 text-xl" :style="{width: asideWidth}">
             <el-icon class="mr-1 text-3xl">
                 <ElementPlus />
             </el-icon>
-            极客空间
+            <span v-show="!isShrink">极客空间</span>
         </div>
-        <el-icon class="icon-btn">
-            <Fold />
+        <el-icon class="icon-btn" @click="handleAsideWidth">
+            <Fold v-if="!isShrink" />
+            <Expand v-else/>
         </el-icon>
         <div class="v-center ml-auto">
             <el-icon class="icon-btn">
@@ -43,8 +44,8 @@
     </div>
 
     <!-- 抽屉 -->
-    <el-drawer title="修改密码" v-model="showDrawer" size="30%" :close-on-press-escape="false">
-        <el-form label-width="80px" :rules="rules" :model="updatePasswordForm" ref="formRef">
+    <form-drawer ref="formDrawerRef" title="修改密码" @submit="update">
+        <el-form label-width="80px" :rules="rules" label-position="left" :model="updatePasswordForm" ref="formRef">
             <el-form-item label="旧密码" prop="oldPassword">
                 <el-input v-model="updatePasswordForm.oldPassword" placeholder="请输入旧密码"></el-input>
             </el-form-item>
@@ -54,11 +55,8 @@
             <el-form-item label="确认密码" prop="rePassword">
                 <el-input v-model="updatePasswordForm.rePassword" placeholder="请确认密码"></el-input>
             </el-form-item>
-            <el-form-item>
-                <el-button class="bg-indigo-500 text-light-50 w-full p-4 rounded-full" @click="update">提交</el-button>
-            </el-form-item>
         </el-form>
-    </el-drawer>
+    </form-drawer>
 </template>
 
 <script setup>
@@ -69,10 +67,11 @@ import { storeToRefs } from 'pinia'
 import { useFullscreen } from '@vueuse/core'
 import { reactive, ref } from 'vue'
 import { updatePassword } from '~/api/admin'
+import FormDrawer from '~/components/FormDrawer.vue'
 
 const store = useAdminStore()
-const { getInfo, adminLogout } = store
-const { adminInfo } = storeToRefs(store)
+const { getInfo, adminLogout, handleAsideWidth } = store
+const { adminInfo, asideWidth, isShrink } = storeToRefs(store)
 const router = useRouter()
 
 const {
@@ -85,15 +84,15 @@ getInfo()
 
 const handleLogout = () => {
     showModal("是否要退出登录？").then(() => {
-        adminLogout()
-        toast("退出登录成功")
-        router.push("/login")
+        adminLogout().then(() => {
+            toast('退出登录成功')
+            router.push('/login')
+        })
     })
 }
 
-const showDrawer = ref(false)
 const rePassword = () => {
-    showDrawer.value = true
+    formDrawerRef.value.openDrawer()
 }
 
 const formRef = ref(null)
@@ -102,14 +101,12 @@ const updatePasswordForm = reactive({
     newPassword: '',
     rePassword: ''
 })
-const loading = ref(false)
 
 // 确认密码规则
 const rePassRule = (rule, value, callback) => {
     if (value === '') {
         callback(new Error('确认密码不能为空'))
     } else if (value !== updatePasswordForm.newPassword) {
-        console.log(updatePasswordForm.newPassword);
         callback(new Error('与新密码不一致'))
     } else {
         callback()
@@ -126,7 +123,7 @@ const rules = {
         { min: 6, max: 16, message: '长度在 6 到 16 个字符', trigger: 'blur' }
     ],
     rePassword: [
-        {required: true, validator: rePassRule, trigger: 'blur' }
+        { required: true, validator: rePassRule, trigger: 'blur' }
     ]
 }
 
@@ -135,29 +132,30 @@ const update = () => {
         if (!valid) {
             return
         }
-        loading.value = true
+        formDrawerRef.value.showLoading()
         updatePassword(
-            updatePasswordForm.oldPassword, 
+            updatePasswordForm.oldPassword,
             updatePasswordForm.newPassword).then((res) => {
-                console.log(res);
                 if (res.code === 0) {
                     toast('修改成功，请重新登录')
                     adminLogout().then(() => router.push('/login'))
                 } else {
                     toast(res.msg, 'error')
                 }
-        }).finally(() => {
-            loading.value = false
-        })
+            }).finally(() => {
+                formDrawerRef.value.hideLoading()
+            })
     })
-    
 }
+
+// 自定义抽屉
+const formDrawerRef = ref(null);
 
 </script>
 
 <style scoped>
 .icon-btn {
-    @apply flex justify-center items-center mx-1 cursor-pointer
+    @apply flex justify-center items-center mx-1 cursor-pointer text-[40px] p-2
 }
 
 .icon-btn:hover {

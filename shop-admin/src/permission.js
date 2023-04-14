@@ -2,6 +2,9 @@ import router from '~/router'
 
 import { getToken } from '~/composables/token'
 import { toast, showFullLoading, hideFullLoading } from '~/composables/util'
+// import { useAdminStore } from './store'
+// const store = useAdminStore()
+// const { getInfo } = store
 
 // 全局路由前置守卫
 router.beforeEach((to, from, next) => {
@@ -22,6 +25,11 @@ router.beforeEach((to, from, next) => {
         toast('请勿重复登录', 'error')
         return next({ path: from.path || '/' })
     }
+
+    // 如果当前用户有token，获取用户信息，保存在 pinia
+    // if (token) {
+    //     getInfo()
+    // }
 
     // 设置页面标题
     let title = `admin - ${to.meta.title || ''}`
