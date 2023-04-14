@@ -30,7 +30,7 @@ export const useAdminStore = defineStore('admin', {
         },
         // 切换 侧边栏菜单宽度
         handleAsideWidth() {
-            this.asideWidth = this.asideWidth === '220px' ? '80px' : '220px'
+            this.asideWidth = this.asideWidth === '220px' ? '64px' : '220px'
             this.isShrink = !this.isShrink
         }
     }
