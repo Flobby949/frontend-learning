@@ -1,45 +1,53 @@
-import router from '~/router'
+import { router, addRoutes } from "~/router"
+import { getToken } from "~/composables/auth"
+import {
+  toast, showFullLoading,
+  hideFullLoading
+} from "~/composables/util"
+import { useAdminStore } from './store'
+import { storeToRefs } from 'pinia'
 
-import { getToken } from '~/composables/token'
-import { toast, showFullLoading, hideFullLoading } from '~/composables/util'
-import { useAdminStore } from '~/store'
 
-// 全局路由前置守卫
+// 全局前置守卫
 router.beforeEach((to, from, next) => {
-    // 进度条显示
-    showFullLoading()
+  // 显示loading
+  showFullLoading()
 
-    const token = getToken()
+  const store = useAdminStore()
 
-    // 目标页面不是登录页，且没有token，跳回登录页面
-    if (!token && to.path != '/login') {
-        toast('请先登录', 'error')
-        return next({ path: '/login' })
-    }
+  const { getInfo } = store
+  const { menuList } = storeToRefs(store)
 
-    // 防止重复登录
-    if (to.path == '/login' && token) {
-        toast('请勿重复登录', 'error')
-        return next({ path: from.path || '/' })
-    }
+  const token = getToken()
 
-    // 如果当前用户有token，获取用户信息，保存在 pinia
-    const store = useAdminStore()
-    const { getInfo } = store
-    if (token) {
-        getInfo()
-    }
+  // 没有登录，强制跳转回登录页
+  if (!token && to.path != "/login") {
+    toast("请先登录", "error")
+    return next({ path: "/login" })
+  }
 
-    // 设置页面标题
-    let title = `admin - ${to.meta.title || ''}`
-    document.title = title
+  // 防止重复登录
+  if (token && to.path == "/login") {
+    toast("请勿重复登录", "error")
+    return next({ path: from.path ? from.path : "/" })
+  }
 
-    next()
+  // 如果用户登录了，则获取用户信息并存储在 pinia 中，并且新增路由菜单
+  let hasNewRoutes = false
+  if (token) {
+    getInfo().then(() => {
+      hasNewRoutes = addRoutes(menuList.value)
+    })
+  }
+
+  // 设置页面标题
+  let title = '极客空间 - ' + (to.meta.title ? to.meta.title : '')
+  document.title = title
+  console.log(to.fullPath);
+  hasNewRoutes ? next(to.fullPath) : next()
+
+  next()
 })
 
-
-// 路由后置守卫
-router.afterEach((to, from) => {
-    // 隐藏导航栏
-    hideFullLoading()
-})
+// 全局后置守卫
+router.afterEach((to, from) => hideFullLoading())

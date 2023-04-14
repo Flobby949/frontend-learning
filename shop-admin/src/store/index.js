@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia'
 import { adminLogin, getInfo, logout } from '~/api/admin'
-import { setToken, removeToken } from '~/composables/token'
+import { setToken, removeToken } from '~/composables/auth'
 
 export const useAdminStore = defineStore('admin', {
     state: () => ({
         adminInfo: {},
         asideWidth: '220px',
-        isShrink: false
+        isShrink: false,
+        menuList: []
     }),
     actions: {
         adminLogin(username, password) {
@@ -19,14 +20,16 @@ export const useAdminStore = defineStore('admin', {
         },
         async getInfo() {
             const res = await getInfo()
-            this.adminInfo = res.data
+            this.adminInfo = res.data.adminInfo
+            this.menuList = res.data.menus
         },
         async adminLogout() {
             await logout()
-            // 移除 cookie token
+            // 移除 cookie
             removeToken()
             // 清空状态
             this.adminInfo = {}
+            this.menuList = []
         },
         // 切换 侧边栏菜单宽度
         handleAsideWidth() {

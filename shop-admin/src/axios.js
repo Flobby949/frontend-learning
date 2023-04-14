@@ -1,7 +1,7 @@
 // 封装 axios 请求工具
 import axios from 'axios'
 
-import { getToken } from '~/composables/token.js'
+import { getToken } from '~/composables/auth'
 import { toast } from '~/composables/util'
 
 const service = axios.create({

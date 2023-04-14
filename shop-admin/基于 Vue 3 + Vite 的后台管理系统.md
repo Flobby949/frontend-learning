@@ -2265,7 +2265,241 @@ const handleSelect = (e) => {
 </style>
 ```
 
+### 三、动态路由
 
+#### 一、改造路由
+
+1. router/index.js，将路由分成两种，所有管理员都可以访问到的公共路由，以及不同权限可以访问到的动态路由
+
+```js
+// 路由数组
+const routes = [
+    {
+        path: '/',
+        name: 'admin',
+        component: Admin,
+        redirect: '/index',
+        children: [
+            {
+                path: '/index',
+                name: "index",
+                component: Index,
+                meta: {
+                    title: '首页'
+                }
+            }
+        ]
+    },
+    {
+        path: '/login',
+        name: "/login",
+        component: Login,
+        meta: {
+            title: '登录'
+        }
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: '/NotFound',
+        component: NotFound,
+        meta: {
+            title: '页面丢失'
+        }
+    }
+]
+
+// 动态路由，所有页面都要配置，根据权限动态加载
+const asyncRoutes = [
+    {
+        name: "/system",
+        path: "/system",
+        child: [
+            {
+                name: "/system/admin",
+                path: "/system/admin",
+                component: () => import(`~/pages/system/admin.vue`),
+                meta: {
+                    title: '管理员管理',
+                },
+            },
+            {
+                name: "/system/role",
+                path: "/system/role",
+                component: () => import(`~/pages/system/role.vue`),
+                meta: {
+                    title: '角色管理',
+                },
+            },
+            {
+                name: "/system/menu",
+                path: "/system/menu",
+                component: () => import(`~/pages/system/menu.vue`),
+                meta: {
+                    title: '菜单管理',
+                },
+            }
+        ]
+    },
+    {
+        name: "/resource",
+        path: "/resource",
+        child: [
+            {
+                name: "/resource/swipers",
+                path: "/resource/swipers",
+                component: () => import(`~/pages/resource/swipers.vue`),
+                meta: {
+                    title: '轮播管理',
+                },
+            },
+            {
+                name: "/resource/news",
+                path: "/resource/news",
+                component: () => import(`~/pages/resource/news.vue`),
+                meta: {
+                    title: '资讯管理',
+                },
+            },
+            {
+                name: "/resource/files",
+                path: "/resource/files",
+                component: () => import(`~/pages/resource/files.vue`),
+                meta: {
+                    title: '文件管理',
+                },
+            }
+        ]
+    }
+]
+```
+
+2. 在 js 中新增 动态添加路由 方法，并导出
+
+```js
+// 动态添加路由
+export function addRoutes(menus) {
+    // 是否有新的路由
+    let hasNewRoutes = false
+
+    const findAddRoutesByMenus = (arr) => {
+        arr.forEach(element => {
+            const item = asyncRoutes.find(obj => obj.path === element.path)
+            if (item && !router.hasRoute(item.path)) {
+                router.addRoute('admin', item)
+                hasNewRoutes = true
+            }
+            if (element.child && element.child.length > 0) {
+                findAddRoutesByMenus(element.child)
+            }
+        });
+    }
+
+    findAddRoutesByMenus(menus)
+    return hasNewRoutes;
+}
+```
+
+3. 当文件中 export 多个对象或方法时，不能使用 default 导出，并且要修改引入的方式
+
+```js
+// 原导出方式
+export default router
+
+// 修改后导出
+export const router = createRouter()
+export function addRoutes() {}
+
+// 新的导入 - 具名导入
+import { router } from "~/router"
+```
+
+#### 二、动态渲染菜单
+
+​	在 permission.js 中新增功能
+
+```js
+import { router, addRoutes } from "~/router"
+import { useAdminStore } from './store'
+import { storeToRefs } from 'pinia'
+
+// 全局前置守卫
+router.beforeEach((to, from, next) => {
+  const store = useAdminStore()
+
+  const { getInfo } = store
+  const { menuList } = storeToRefs(store)
+  
+  // 如果用户登录了，则获取用户信息并存储在 pinia 中，并且新增路由菜单
+  let hasNewRoutes = false
+  if (token) {
+    getInfo().then(() => {
+      hasNewRoutes = addRoutes(menuList.value)
+    })
+  }
+})
+```
+
+#### 三、改造菜单页面
+
+```vue
+<!-- FMenu.vue -->
+
+<script setup>
+import { useAdminStore } from '~/store'
+import { storeToRefs } from 'pinia'
+
+const store = useAdminStore()
+const { menuList } = storeToRefs(store)
+</script>
+
+<template>
+	<template v-for="(item, index) in menuList" :key="index">
+        ……
+	</template>
+</template>
+```
+
+#### 四、修改mock接口
+
+1. 获取管理员信息接口返回参数
+
+![](https://i2.100024.xyz/2023/04/14/uctjvu.webp)
+
+2. 新增mock数据
+
+	1. 登录
+
+![](https://flobby529.oss-cn-nanjing.aliyuncs.com/notes/adminLogin.jpg)
+
+​		2. 管理员信息
+
+![](https://flobby529.oss-cn-nanjing.aliyuncs.com/notes/adminInfo.jpg)
+
+#### 五、接口获取菜单列表并持久化
+
+修改 store/index.js
+
+```js
+state: () => ({
+    adminInfo: {},
+    menuList: []
+}),
+actions: {
+    async getInfo() {
+        const res = await getInfo()
+        this.adminInfo = res.data.adminInfo
+        this.menuList = res.data.menus
+    },
+    async adminLogout() {
+        await logout()
+        // 移除 cookie
+        removeToken()
+        // 清空状态
+        this.adminInfo = {}
+        this.menuList = []
+    },
+}
+```
 
 # 四、Dashboard 开发和交互
 
