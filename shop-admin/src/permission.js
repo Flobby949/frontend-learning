@@ -43,10 +43,7 @@ router.beforeEach((to, from, next) => {
   // 设置页面标题
   let title = '极客空间 - ' + (to.meta.title ? to.meta.title : '')
   document.title = title
-  console.log(to.fullPath);
   hasNewRoutes ? next(to.fullPath) : next()
-
-  next()
 })
 
 // 全局后置守卫
