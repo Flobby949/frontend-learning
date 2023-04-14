@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import Concat from '../components/Concat.vue';
+import TodoForm from '../components/TodoForm.vue';
+import TodoList from '../components/TodoList.vue';
 </script>
 
 <template>
-  <Concat></Concat>
+  <div class="p-10">
+    <TodoForm></TodoForm>
+    <TodoList></TodoList>
+  </div>
 </template>
 
 

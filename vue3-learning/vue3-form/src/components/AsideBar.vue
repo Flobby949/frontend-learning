@@ -29,7 +29,7 @@
       <li>
         <RouterLink to="/about" class="px-4 py-3 flex items-center space-x-4 rounded-md text-gray-600">
           <DocumentChartBarIcon class="h-6 w-6 text-gray-400" />
-          <span class="group-hover:text-cyan-400">关 于</span>
+          <span class="group-hover:text-cyan-400">Pinia</span>
         </RouterLink>
       </li>
     </ul>
