@@ -5,7 +5,7 @@ import { getToken } from '~/composables/token.js'
 import { toast } from '~/composables/util'
 
 const service = axios.create({
-    baseURL: 'http://127.0.0.1:4523/m1/2571699-0-default/api',
+    baseURL: 'http://127.0.0.1:4523/m1/2571699-0-default',
 
 })
 

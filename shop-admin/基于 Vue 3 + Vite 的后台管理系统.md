@@ -12,9 +12,9 @@
 > - [VueUse](https://vueuse.org/)
 > - Apifox
 
-## 一、项目创建和配置
+# 一、项目创建和配置
 
-### 一、创建项目
+## 一、创建项目
 
 ```shell
 # npm 6.x
@@ -30,7 +30,7 @@ yarn create vite shop-admin --template vue
 pnpm create vite shop-admin --template vue
 ```
 
-### 二、引入 Element Plus
+## 二、引入 Element Plus
 
 1. 添加依赖
 
@@ -79,7 +79,7 @@ app.mount('#app')
 </template>
 ```
 
-### 三、引入 Windi CSS
+## 三、引入 Windi CSS
 
 1. 添加依赖
 
@@ -150,7 +150,7 @@ import 'virtual:windi.css'
 </style>
 ```
 
-### 四、引入 vue-router4
+## 四、引入 vue-router4
 
 1. 添加依赖
 
@@ -249,9 +249,9 @@ const router = createRouter({
 export default router
 ```
 
-## 二、登录页开发和功能实现
+# 二、登录页开发和功能实现
 
-#### 一、页面实现
+## 一、页面实现
 
 1. 新建 login.vue 页面，并且在路由文件中注册页面
 2. 简单页面实现
@@ -337,7 +337,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 </el-form-item>
 ```
 
-#### 二、添加表单校验
+## 二、添加表单校验
 
 1. 添加表单规则
 
@@ -405,9 +405,9 @@ const onSubmit = () => {
 </el-form>
 ```
 
-#### 三、接口请求
+## 三、接口请求
 
-##### 一、Apifox 准备 Mock 数据
+### 一、Apifox 准备 Mock 数据
 
 1. 编写接口文档
 
@@ -421,7 +421,7 @@ const onSubmit = () => {
 
 ![](https://i2.100024.xyz/2023/04/11/p8qxrs.webp)
 
-##### 二、页面实现请求
+### 二、页面实现请求
 
 1. 安装 axios
 2. 实现 axios 工具包，src 下创建 axios.js
@@ -499,7 +499,7 @@ const onSubmit = () => {
 }
 ```
 
-##### 三、使用 vueuse 保存登录状态
+### 三、使用 vueuse 保存登录状态
 
 1. 添加 依赖
 
@@ -601,7 +601,7 @@ const token = ref(cookie.get('admin-token'))
 </style>
 ```
 
-##### 四、axios 设置请求拦截
+## 四、axios 设置请求拦截
 
 1. axios.js 添加请求拦截以及响应拦截
 
@@ -700,7 +700,7 @@ const onSubmit = () => {
 </script>
 ```
 
-##### 五、封装 token & 公共方法
+## 五、封装 token & 公共方法
 
 新建 src/composables包
 
@@ -902,7 +902,7 @@ const onSubmit = () => {
 }
 ```
 
-##### 六、全局路由拦截
+## 六、全局路由拦截
 
 1. 前置路由守卫，新建 src/permission.js
 
@@ -1014,7 +1014,7 @@ router.beforeEach((to, from, next) => {
 })
 ```
 
-##### 七、集成 Pinia 状态存储
+## 七、集成 Pinia 状态存储
 
 1. 添加依赖
 
@@ -1126,7 +1126,7 @@ const { token, admin } = storeToRefs(store)
 </script>
 ```
 
-##### 八、改造登录，存储管理员信息
+## 八、改造登录，存储管理员信息
 
 1. 新增 获取管理员接口 & 退出登录接口，并且添加成功失败的mock
 
@@ -1275,9 +1275,9 @@ const handleLogout = () => {
 </script>
 ```
 
-## 三、后台管理 Layout 布局开发
+# 三、后台管理 Layout 布局开发
 
-### 一、配置 404 页面
+## 一、配置 404 页面
 
 ```vue
 <!-- 404.vue -->
@@ -1293,7 +1293,7 @@ const handleLogout = () => {
 </template>
 ```
 
-### 二、后台整体布局
+## 二、后台整体布局
 
 1. 新建 src/layout 文件夹，新建 layout/components/FHeader.vue、layout/components/FMenu.vue、layout/components/FTagList.vue 文件以及 layout/admin.vue
 
@@ -1374,7 +1374,7 @@ import FTagList from './components/FTagList.vue';
 
 ![](https://i2.100024.xyz/2023/04/13/xa7pr1.webp)
 
-### 三、头部组件样式
+## 三、头部组件样式
 
 1. 添加公共样式
 
@@ -1490,7 +1490,7 @@ const handleLogout = () => {
 
 ![](https://i2.100024.xyz/2023/04/13/xxebit.webp)
 
-### 四、全屏功能实现
+## 四、全屏功能实现
 
 1. 添加 vueuse 核心依赖
 
@@ -1532,7 +1532,13 @@ const {
 </script>
 ```
 
-### 五、修改密码抽屉
+## 五、修改密码
+
+### 一、接口mock
+
+![](https://i2.100024.xyz/2023/04/14/dipanr.webp)
+
+### 二、页面布局实现
 
 > 修改 FHeader.vue
 
@@ -1567,19 +1573,122 @@ const rePassword = () => {
 </script>
 ```
 
-## 四、Dashboard 开发和交互
+### 三、页面实现修改密码
+
+1. src/api/admin.js 新增接口方法
+
+```js
+// 管理员修改密码
+export function updatePassword(oldPassword, newPassword) {
+    return axios.post(
+        '/admin/updatePassword',
+        {
+            oldPassword,
+            newPassword
+        }
+    )
+}
+```
+
+2. 改造 FHeader.vue
+
+```vue
+<template>  
+	<!-- 抽屉 -->
+    <el-drawer title="修改密码" v-model="showDrawer" size="30%" :close-on-press-escape="false">
+        <el-form label-width="80px" :rules="rules" :model="updatePasswordForm" ref="formRef">
+            <el-form-item label="旧密码" prop="oldPassword">
+                <el-input v-model="updatePasswordForm.oldPassword" placeholder="请输入旧密码"></el-input>
+            </el-form-item>
+            <el-form-item label="新密码" prop="newPassword">
+                <el-input v-model="updatePasswordForm.newPassword" placeholder="请输入新密码"></el-input>
+            </el-form-item>
+            <el-form-item label="确认密码" prop="rePassword">
+                <el-input v-model="updatePasswordForm.rePassword" placeholder="请确认密码"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button class="bg-indigo-500 text-light-50 w-full p-4 rounded-full" @click="update">提交</el-button>
+            </el-form-item>
+        </el-form>
+    </el-drawer>
+</template>
+
+<script setup>
+import { updatePassword } from '~/api/admin'
+    
+const formRef = ref(null)
+const updatePasswordForm = reactive({
+    oldPassword: '',
+    newPassword: '',
+    rePassword: ''
+})
+const loading = ref(false)
+
+// 确认密码规则
+const rePassRule = (rule, value, callback) => {
+    if (value === '') {
+        callback(new Error('确认密码不能为空'))
+    } else if (value !== updatePasswordForm.newPassword) {
+        console.log(updatePasswordForm.newPassword);
+        callback(new Error('与新密码不一致'))
+    } else {
+        callback()
+    }
+}
+
+// 规则
+const rules = {
+    oldPassword: [
+        { required: true, message: '旧密码不能为空', trigger: 'blur' }
+    ],
+    newPassword: [
+        { required: true, message: '新密码不能为空', trigger: 'blur' },
+        { min: 6, max: 16, message: '长度在 6 到 16 个字符', trigger: 'blur' }
+    ],
+    rePassword: [
+        {required: true, validator: rePassRule, trigger: 'blur' }
+    ]
+}
+
+const update = () => {
+    formRef.value.validate((valid) => {
+        if (!valid) {
+            return
+        }
+        loading.value = true
+        updatePassword(
+            updatePasswordForm.oldPassword, 
+            updatePasswordForm.newPassword).then((res) => {
+                console.log(res);
+                if (res.code === 0) {
+                    toast('修改成功，请重新登录')
+                    adminLogout().then(() => router.push('/login'))
+                } else {
+                    toast(res.msg, 'error')
+                }
+        }).finally(() => {
+            loading.value = false
+        })
+    })
+}
+</script>
+```
+
+
+
+# 四、Dashboard 开发和交互
 
 
 
 
 
-## 五、模块开发
+# 五、模块开发
 
 
 
 
 
-## 六、部署上线
+# 六、部署上线
 
 
 

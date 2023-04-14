@@ -20,3 +20,14 @@ export function getInfo() {
 export function logout () {
     return axios.post("/admin/logout")
 }
+
+// 管理员修改密码
+export function updatePassword(oldPassword, newPassword) {
+    return axios.post(
+        '/admin/updatePassword',
+        {
+            oldPassword,
+            newPassword
+        }
+    )
+}
