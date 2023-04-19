@@ -1,36 +1,43 @@
+<template>
+  <div>
+      <p>
+          Supported:
+          <BooleanDisplay :value="isSupported" />
+      </p>
+  </div>
+
+  <div v-if="isSupported">
+      <button class="bg-blue-400 text-white p-2 rounded-lg" @click="show()">
+          Show Notification
+      </button>
+  </div>
+  <div v-else>
+      The Notification Web API is not supported in your browser.
+  </div>
+</template>
+
 <script setup>
-import { ref } from "vue";
-import { useShare } from '@vueuse/core'
-import { isClient } from '@vueuse/shared'
+import { useWebNotification } from '@vueuse/core'
+import axios from 'axios'
 
-const { share, isSupported } = useShare()
-
-const options = ref({
-  title: 'VueUse',
-  text: '分享网页',
-  url: isClient ? location.href : '',
-})
-
-function startShare() {
-  share({
-    title: 'Hello',
-    text: 'Hello my friend!',
-    url: location.href,
-  })
+const options = {
+  title: 'Hello, world from VueUse!',
+  dir: 'auto',
+  lang: 'en',
+  renotify: true,
+  tag: 'test',
 }
+const {
+  isSupported,
+  show
+} = useWebNotification(options)
+
+axios.get(
+  "http://localhost:8080/sse/msg"
+).then((res) => {
+  console.log(res.data);
+})
 
 </script>
 
-<template>
-  <div>
-    <input
-      v-if="isSupported"
-      v-model="options.text"
-      type="text"
-      placeholder="Note"
-    >
-    <button :disabled="!isSupported" @click="startShare">
-      {{ isSupported ? '分享' : 'Web share is not supported in your browser' }}
-    </button>
-  </div>
-</template>
+<style scoped></style>

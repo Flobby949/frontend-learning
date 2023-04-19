@@ -58,6 +58,11 @@ const router = createRouter({
       name: 'UseView',
       component: () => import('../views/UseView.vue')
     },
+    {
+      path: '/sse',
+      name: 'sseView',
+      component: () => import('../views/VueSse.vue')
+    },
   ]
 })
 

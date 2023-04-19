@@ -15,6 +15,7 @@
         <RouterLink to="/vueuse">VueUse</RouterLink>
         <RouterLink to="/use">自定义use</RouterLink>
         <RouterLink to="/sock">Sock Ex</RouterLink>
+        <RouterLink to="/sse">sse</RouterLink>
       </nav>
   </header>
 
