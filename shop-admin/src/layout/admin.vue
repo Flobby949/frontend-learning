@@ -1,28 +1,58 @@
-<template>
-    <el-header>
-        <f-header></f-header>
-    </el-header>
-    <el-container>
-        <el-aside :style="{ width: asideWidth }">
-            <f-menu></f-menu>
-        </el-aside>
-
-        <el-main>
-            <f-tag-list></f-tag-list>
-            <router-view></router-view>
-        </el-main>
-    </el-container>
-</template>
-
 <script setup>
-import { storeToRefs } from 'pinia';
-import { useAdminStore } from '../store';
-import FHeader from './components/FHeader.vue';
-import FMenu from './components/FMenu.vue';
-import FTagList from './components/FTagList.vue';
-
 const store = useAdminStore()
-const { asideWidth } = storeToRefs(store);
+const { sideWidth } = storeToRefs(store)
 </script>
 
-<style scoped></style>
+<template>
+	<el-container>
+		<el-header>
+			<top-nav />
+		</el-header>
+
+		<el-container>
+			<el-aside :style="{ width: sideWidth }">
+				<side-menu />
+			</el-aside>
+
+			<el-main>
+				<bread-crumbs />
+				<router-view v-slot="{ Component }">
+					<transition name="fade">
+						<keep-alive :max="10">
+							<component :is="Component"></component>
+						</keep-alive>
+					</transition>
+				</router-view>
+			</el-main>
+		</el-container>
+	</el-container>
+</template>
+
+<style scoped>
+.el-main {
+	@apply w-full h-screen text-left;
+	padding: 0;
+}
+.el-aside {
+	transition: all 0.2s;
+}
+.fade-enter-from {
+	opacity: 0;
+}
+.fade-enter-to {
+	opacity: 1;
+}
+.fade-leave-from {
+	opacity: 1;
+}
+.fade-leave-to {
+	opacity: 0;
+}
+.fade-enter-active,
+.fade-leave-active {
+	transition: all 0.3s;
+}
+.fade-enter-active {
+	transition-delay: 0.3s;
+}
+</style>

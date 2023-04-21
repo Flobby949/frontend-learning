@@ -1,12 +1,11 @@
 import { router, addRoutes } from "~/router"
-import { getToken } from "~/composables/auth"
+import { getToken, getMenu } from "~/composables/auth"
 import {
   toast, showFullLoading,
   hideFullLoading
 } from "~/composables/util"
 import { useAdminStore } from './store'
 import { storeToRefs } from 'pinia'
-
 
 // 全局前置守卫
 router.beforeEach((to, from, next) => {
@@ -16,7 +15,7 @@ router.beforeEach((to, from, next) => {
   const store = useAdminStore()
 
   const { getInfo } = store
-  const { menuList } = storeToRefs(store)
+  let {menuList} = storeToRefs(store)
 
   const token = getToken()
 
