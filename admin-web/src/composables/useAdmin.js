@@ -1,7 +1,7 @@
 export function usePassword() {
 	const router = useRouter()
 	const store = useAdminStore()
-	const { logout } = store
+	const { storeLogout } = store
 	const formDrawerRef = ref(null)
 	const openRepasswordForm = () => formDrawerRef.value.open()
 
@@ -61,7 +61,7 @@ export function usePassword() {
 					console.log(res)
 					if (res.code == 1) {
 						toast('修改密码成功，请重新登录')
-						logout().then(() => {
+						storeLogout().then(() => {
 							router.push('/login')
 						})
 					} else {

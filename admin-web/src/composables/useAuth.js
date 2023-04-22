@@ -1,10 +1,8 @@
 //账号密码登录 hooks
-export function useAccountLogin() {
+export function useAccountLogin () {
 	const router = useRouter()
 	const store = useAdminStore()
-	const { getAdminInfo, getMenu } = store
-
-	const { login } = store
+	const { storeLogin } = store
 
 	const form = reactive({
 		username: 'admin',
@@ -45,7 +43,6 @@ export function useAccountLogin() {
 
 	const onCaptcha = () => {
 		getCaptcha().then(res => {
-			console.log(res.data)
 			form.key = res.data.key
 			captchaBase64.value = res.data.image
 		})
@@ -62,19 +59,16 @@ export function useAccountLogin() {
 
 			loading.value = true
 
-			setTimeout(() => {
-				login(form).then(res => {
-					if (res.code === 1) {
-						toast('登录成功')
-						getAdminInfo().then(() => {
-							getMenu().then(() => {
-								router.push('/')
-							})
-						})
-					}
-					loading.value = false
-				})
-			}, 1000)
+			storeLogin(form).then(res => {
+				if (res.code === 1) {
+					toast('登录成功')
+					router.push('/')
+				} else {
+					toast(res.msg)
+					router.push('/login')
+				}
+				loading.value = false
+			})
 		})
 	}
 	return {
@@ -89,7 +83,7 @@ export function useAccountLogin() {
 }
 
 //手机短信登录 hooks
-export function useMobileLogin() {
+export function useMobileLogin () {
 	const loginFormRef = ref()
 
 	const loginForm = reactive({
@@ -149,13 +143,15 @@ export function useMobileLogin() {
 }
 
 //退出登录 hooks
-export function useLogout() {
+export function useLogout () {
 	const router = useRouter()
 	const store = useAdminStore()
-	const { logout } = store
+	const { storeLogout } = store
 	const handleLogout = () => {
 		showModal('是否要退出登录？').then(() => {
-			logout().then(() => {
+			storeLogout().then(() => {
+				// 移除 cookie里的 token
+				removeToken()
 				router.push('/login')
 			})
 		})

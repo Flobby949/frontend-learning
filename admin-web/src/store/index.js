@@ -8,7 +8,7 @@ export const useAdminStore = defineStore('admin', {
 	}),
 	actions: {
 		// 登录
-		login(username, password) {
+		storeLogin(username, password) {
 			return new Promise((resolve, reject) => {
 				login(username, password)
 					.then(res => {
@@ -19,47 +19,25 @@ export const useAdminStore = defineStore('admin', {
 			})
 		},
 		// 获取当前登录者信息
-		getAdminInfo() {
+		getStoreInfo() {
 			return new Promise((resolve, reject) => {
 				getInfo()
 					.then(res => {
-						this.adminInfo = res.data
-						resolve(res)
-					})
-					.catch(err => reject(err))
-			})
-		},
-		getMenu() {
-			return new Promise((resolve, reject) => {
-				getNav()
-					.then(res => {
-						this.menus = res.data
-						resolve(res)
-					})
-					.catch(err => reject(err))
-			})
-		},
-		getStoreAuthority() {
-			return new Promise((resolve, reject) => {
-				getAuthority()
-					.then(res => {
-						this.authorities = res.data
-						console.log(this.authorities)
+						this.adminInfo = res.data.user
+						this.menus = res.data.nav
+						this.authorities = res.data.authority
 						resolve(res)
 					})
 					.catch(err => reject(err))
 			})
 		},
 		// 退出登录
-		logout() {
-			const cookie = useCookies()
+		storeLogout() {
 			return new Promise((resolve, reject) => {
 				logout()
 					.then(res => {
-						// 移除 cookie里的 token
-						removeToken()
-						// 移除 cookie里的 tabList
-						cookie.remove('tabList')
+						// 移除 localStorage里的 tabList
+						removeKey('tabList')
 						// 清空状态
 						this.adminInfo = {}
 						this.menus = []

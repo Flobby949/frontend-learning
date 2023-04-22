@@ -1,8 +1,8 @@
 import { router } from '@/router'
+import { setKey, getKey } from './token'
 
 export function useBreadCrumbs() {
 	const route = useRoute()
-	const cookie = useCookies()
 
 	const activeTab = ref(route.path)
 	const tabList = ref([
@@ -18,13 +18,12 @@ export function useBreadCrumbs() {
 		if (noTab) {
 			tabList.value.push(tab)
 		}
-
-		cookie.set('tabList', tabList.value)
+		setKey('tabList', tabList.value)
 	}
 
 	// 初始化标签导航列表
 	function initTabList() {
-		let tbs = cookie.get('tabList')
+		let tbs = getKey('tabList')
 		if (tbs) {
 			tabList.value = tbs
 		}
@@ -62,7 +61,7 @@ export function useBreadCrumbs() {
 		activeTab.value = a
 		tabList.value = tabList.value.filter(tab => tab.path != t)
 
-		cookie.set('tabList', tabList.value)
+		setKey('tabList', tabList.value)
 	}
 
 	const handleClose = c => {
@@ -80,7 +79,7 @@ export function useBreadCrumbs() {
 			// 过滤只剩下仪表盘页和当前激活
 			tabList.value = tabList.value.filter(tab => tab.path == '/' || tab.path == activeTab.value)
 		}
-		cookie.set('tabList', tabList.value)
+		setKey('tabList', tabList.value)
 	}
 
 	return {
