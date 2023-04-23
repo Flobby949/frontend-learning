@@ -11,6 +11,10 @@ const isCollapse = computed(() => sideWidth.value !== '220px')
 const handleSelect = e => {
 	router.push(e)
 }
+
+onBeforeRouteUpdate((to, from) => {
+	defaultActive.value = to.path
+})
 </script>
 
 <template>

@@ -11,6 +11,7 @@ import Goods from '@/views/goods/index.vue'
 import Order from '@/views/order/index.vue'
 import Notice from '@/views/notice/index.vue'
 import Docs from '@/views/docs/index.vue'
+import Logs from '@/views/log/index.vue'
 
 // 共享路由
 const routes = [
@@ -108,6 +109,14 @@ const asyncRoutes = [
 		component: Docs,
 		meta: {
 			title: '接口文档'
+		}
+	},
+	{
+		path: '/sys/log/index',
+		name: 'logs',
+		component: Logs,
+		meta: {
+			title: '登录日志'
 		}
 	}
 ]

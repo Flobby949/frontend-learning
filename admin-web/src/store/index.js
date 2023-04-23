@@ -35,14 +35,16 @@ export const useAdminStore = defineStore('admin', {
 		storeLogout() {
 			return new Promise((resolve, reject) => {
 				logout()
-					.then(res => {
+					.then(() => {
+						// 移除 cookie里的 token
+						removeToken()
 						// 移除 localStorage里的 tabList
-						removeKey('tabList')
+						removeTabList()
 						// 清空状态
 						this.adminInfo = {}
 						this.menus = []
 						this.authorities = []
-						resolve(res)
+						resolve()
 					})
 					.catch(err => reject(err))
 			})

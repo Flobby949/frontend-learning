@@ -150,8 +150,6 @@ export function useLogout () {
 	const handleLogout = () => {
 		showModal('是否要退出登录？').then(() => {
 			storeLogout().then(() => {
-				// 移除 cookie里的 token
-				removeToken()
 				router.push('/login')
 			})
 		})

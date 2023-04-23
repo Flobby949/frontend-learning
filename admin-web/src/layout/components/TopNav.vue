@@ -68,7 +68,8 @@ const { formDrawerRef, form, rules, formRef, onSubmit, openRepasswordForm } = us
 
 <style scoped>
 .f-header {
-	@apply bg-gradient-to-r from-cyan-600 to-sky-600 text-light-50 fixed top-0 left-0 right-0 h-16 shadow-xl shadow-gray-400;
+	z-index: 999;
+	@apply bg-gradient-to-r from-cyan-600 to-sky-600 text-light-50 fixed top-0 left-0 right-0 h-16;
 }
 .icon {
 	@apply mx-1 cursor-pointer hover: opacity-70 text-xl;

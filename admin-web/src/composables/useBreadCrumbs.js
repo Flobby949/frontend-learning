@@ -1,5 +1,4 @@
 import { router } from '@/router'
-import { setKey, getKey } from './token'
 
 export function useBreadCrumbs() {
 	const route = useRoute()
@@ -18,12 +17,12 @@ export function useBreadCrumbs() {
 		if (noTab) {
 			tabList.value.push(tab)
 		}
-		setKey('tabList', tabList.value)
+		setTabList(tabList.value)
 	}
 
 	// 初始化标签导航列表
 	function initTabList() {
-		let tbs = getKey('tabList')
+		let tbs = getTabList()
 		if (tbs) {
 			tabList.value = tbs
 		}
@@ -61,7 +60,7 @@ export function useBreadCrumbs() {
 		activeTab.value = a
 		tabList.value = tabList.value.filter(tab => tab.path != t)
 
-		setKey('tabList', tabList.value)
+		setTabList(tabList.value)
 	}
 
 	const handleClose = c => {
@@ -79,7 +78,7 @@ export function useBreadCrumbs() {
 			// 过滤只剩下仪表盘页和当前激活
 			tabList.value = tabList.value.filter(tab => tab.path == '/' || tab.path == activeTab.value)
 		}
-		setKey('tabList', tabList.value)
+		setTabList(tabList.value)
 	}
 
 	return {

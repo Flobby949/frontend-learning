@@ -25,15 +25,25 @@ export default defineConfig({
 				//自定义导入
 				{
 					// onBeforeRouteLeave 'vue-router’的这个 API 未被自动导入，在这里补充
-					'vue-router': ['onBeforeRouteLeave'],
+					'vue-router': ['onBeforeRouteLeave', 'onBeforeRouteUpdate'],
 					'@/composables/util': ['toast', 'showModal', 'showFullLoading', 'hideFullLoading'],
-					'@/composables/token': ['setToken', 'getToken', 'removeToken', 'setKey', 'getKey', 'removeKey'],
+					'@/composables/useStorage': [
+						'setToken',
+						'getToken',
+						'removeToken',
+						'setTabList',
+						'getTabList',
+						'removeTabList',
+						'setKey',
+						'getKey',
+						'removeKey'
+					],
 					'@/composables/useAuth': ['useAccountLogin', 'useMobileLogin', 'useLogout'],
 					'@/composables/useAdmin': ['usePassword'],
 					'@/composables/useBreadCrumbs': ['useBreadCrumbs'],
 					'@/composables/useNotice': ['useNotice'],
 					'@/api/auth': ['login', 'logout', 'getCaptcha'],
-					'@/api/admin': ['getInfo', 'rePassword'],
+					'@/api/admin': ['getInfo', 'rePassword', 'getLogs'],
 					'@/api/menu': ['getNav', 'getAuthority'],
 					'@/api/notice': [
 						'getNoticePage',
